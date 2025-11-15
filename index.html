@@ -1206,6 +1206,62 @@
             margin: 1rem 0;
         }
 
+        /* Subscribe Section */
+        .subscribe-section {
+            padding: 6rem 2rem;
+            background: var(--gradient-1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subscribe-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><path d="M0 0L100 100M100 0L0 100" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>');
+            opacity: 0.5;
+        }
+
+        .subscribe-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subscribe-content h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 1rem;
+            color: white;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subscribe-content p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .subscribe-content .btn {
+            font-size: 1.1rem;
+            padding: 1.2rem 3rem;
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .subscribe-content .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+
         /* Footer */
         footer {
             background: rgba(0, 0, 0, 0.5);
@@ -1822,6 +1878,40 @@
         </div>
     </div>
 
+    <!-- Subscribe Modal -->
+    <div class="modal" id="subscribeModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeSubscribeModal()">×</button>
+            <h2>Subscribe for Updates</h2>
+            <p style="color: #666; margin-bottom: 2rem;">Be the first to know when new songs are released</p>
+
+            <form id="subscribeForm" onsubmit="handleSubscribeSubmit(event)">
+                <input type="text" name="firstName" placeholder="First Name" required class="form-input">
+                <input type="text" name="lastName" placeholder="Last Name" required class="form-input">
+                <input type="email" name="email" placeholder="Email Address" required class="form-input">
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-envelope"></i> SUBSCRIBE
+                </button>
+            </form>
+
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #666; text-align: center;">
+                We respect your privacy. Read our <a href="#" onclick="closeSubscribeModal(); openPrivacyModal(); return false;" style="color: #4facfe;">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Subscribe Section -->
+    <section class="subscribe-section">
+        <div class="subscribe-content">
+            <h2>Stay Updated</h2>
+            <p>Subscribe to receive notifications when new songs are released</p>
+            <button class="btn btn-primary" onclick="openSubscribeModal()">
+                <i class="fas fa-envelope"></i> Subscribe Now
+            </button>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">© 2025 Fathers Son Music. All rights reserved.</p>
@@ -2144,6 +2234,12 @@
             }
         });
 
+        document.getElementById('subscribeModal').addEventListener('click', (e) => {
+            if (e.target.id === 'subscribeModal') {
+                closeSubscribeModal();
+            }
+        });
+
         // Lyrics data
         const lyricsData = {
             message: {
@@ -2378,6 +2474,51 @@ Read the Bible and send up prayers`
 
         function closeTermsModal() {
             document.getElementById('termsModal').classList.remove('active');
+        }
+
+        // Subscribe modal
+        function openSubscribeModal() {
+            document.getElementById('subscribeModal').classList.add('active');
+        }
+
+        function closeSubscribeModal() {
+            document.getElementById('subscribeModal').classList.remove('active');
+        }
+
+        // Subscribe form handler
+        async function handleSubscribeSubmit(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+
+            // Get form values
+            const firstName = formData.get('firstName');
+            const lastName = formData.get('lastName');
+            const email = formData.get('email');
+
+            // Disable button and show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SUBSCRIBING...';
+
+            try {
+                // TODO: Integrate with email service (e.g., Mailchimp, ConvertKit, or custom backend)
+                // For now, simulate success
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                alert(`Thank you for subscribing, ${firstName}! We'll notify you at ${email} when new songs are released.`);
+                form.reset();
+                closeSubscribeModal();
+            } catch (error) {
+                console.error('Subscribe form error:', error);
+                alert('An error occurred. Please try again later.');
+            } finally {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonText;
+            }
         }
 
         // Contact form handler
