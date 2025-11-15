@@ -1606,6 +1606,7 @@
 
     <!-- Audio Player -->
     <div class="audio-player" id="audioPlayer">
+        <audio id="audioElement" preload="metadata"></audio>
         <div class="player-content">
             <div class="player-info">
                 <h4 id="currentSong">Song Title</h4>
@@ -1835,16 +1836,21 @@
         }
 
         // Audio player
-        let isPlaying = false;
+        const audioElement = document.getElementById('audioElement');
         let currentSongData = null;
-        let playheadInterval = null;
-        let playheadPosition = 0;
+
+        // Map song titles to audio files
+        const songFiles = {
+            'Message In The Song': 'Media/1-Message_in_the_Song-Fathers_Son_Music.mp3',
+            'Grandpa Nick': 'Media/2-Grandpa_Joe-Fathers_Son_Music.mp3',
+            'Spiritual Abuse': 'Media/3-Spiritual_Abuse-Fathers_Son_Music.mp3'
+        };
 
         // Generate waveform bars
         function generateWaveform() {
             const waveform = document.getElementById('waveform');
             waveform.innerHTML = ''; // Clear existing bars
-            
+
             const barCount = 50;
             for (let i = 0; i < barCount; i++) {
                 const bar = document.createElement('div');
@@ -1858,88 +1864,103 @@
 
         function playSong(title, description) {
             const player = document.getElementById('audioPlayer');
+            const audioFile = songFiles[title];
+
+            if (!audioFile) {
+                console.error('Audio file not found for:', title);
+                return;
+            }
+
+            // Update UI
             document.getElementById('currentSong').textContent = title;
             document.getElementById('currentDesc').textContent = description;
+            currentSongData = { title, description, file: audioFile };
+
+            // Load and play audio
+            audioElement.src = audioFile;
+            audioElement.load();
+
+            // Show player and play
             player.classList.add('active');
-            isPlaying = true;
-            currentSongData = { title, description };
-            
-            // Generate waveform and start animation
+            audioElement.play().catch(error => {
+                console.error('Error playing audio:', error);
+                alert('Unable to play audio. Please try again.');
+            });
+
+            // Generate waveform
             generateWaveform();
-            startPlayhead();
-            updatePlayPauseIcon();
         }
 
         function togglePlay() {
-            isPlaying = !isPlaying;
-            
-            if (isPlaying) {
-                startPlayhead();
+            if (audioElement.paused) {
+                audioElement.play();
             } else {
-                stopPlayhead();
+                audioElement.pause();
             }
-            
-            updatePlayPauseIcon();
         }
 
         function updatePlayPauseIcon() {
             const icon = document.getElementById('playPauseIcon');
-            if (isPlaying) {
-                icon.className = 'fas fa-pause';
-            } else {
+            if (audioElement.paused) {
                 icon.className = 'fas fa-play';
-            }
-        }
-
-        function startPlayhead() {
-            stopPlayhead(); // Clear any existing interval
-            
-            playheadInterval = setInterval(() => {
-                if (isPlaying) {
-                    playheadPosition += 0.5;
-                    
-                    // Reset at 100%
-                    if (playheadPosition >= 100) {
-                        playheadPosition = 0;
-                    }
-                    
-                    const playhead = document.getElementById('playhead');
-                    playhead.style.left = playheadPosition + '%';
-                    
-                    // Update active bars
-                    const bars = document.querySelectorAll('.wave-bar');
-                    bars.forEach((bar, index) => {
-                        const barPosition = (index / bars.length) * 100;
-                        if (barPosition <= playheadPosition) {
-                            bar.classList.add('active');
-                        } else {
-                            bar.classList.remove('active');
-                        }
-                    });
-                }
-            }, 100);
-        }
-
-        function stopPlayhead() {
-            if (playheadInterval) {
-                clearInterval(playheadInterval);
-                playheadInterval = null;
+            } else {
+                icon.className = 'fas fa-pause';
             }
         }
 
         function stopSong() {
-            isPlaying = false;
-            stopPlayhead();
-            playheadPosition = 0;
+            audioElement.pause();
+            audioElement.currentTime = 0;
             updatePlayPauseIcon();
+            updatePlayhead();
             closePlayer();
         }
 
         function closePlayer() {
             document.getElementById('audioPlayer').classList.remove('active');
-            stopPlayhead();
-            playheadPosition = 0;
+            audioElement.pause();
+            audioElement.currentTime = 0;
         }
+
+        function updatePlayhead() {
+            if (audioElement.duration) {
+                const progress = (audioElement.currentTime / audioElement.duration) * 100;
+                const playhead = document.getElementById('playhead');
+                playhead.style.left = progress + '%';
+
+                // Update active bars
+                const bars = document.querySelectorAll('.wave-bar');
+                bars.forEach((bar, index) => {
+                    const barPosition = (index / bars.length) * 100;
+                    if (barPosition <= progress) {
+                        bar.classList.add('active');
+                    } else {
+                        bar.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // Audio event listeners
+        audioElement.addEventListener('play', updatePlayPauseIcon);
+        audioElement.addEventListener('pause', updatePlayPauseIcon);
+        audioElement.addEventListener('timeupdate', updatePlayhead);
+        audioElement.addEventListener('ended', () => {
+            updatePlayPauseIcon();
+            audioElement.currentTime = 0;
+            updatePlayhead();
+        });
+
+        // Click on waveform to seek
+        document.getElementById('waveform').addEventListener('click', (e) => {
+            if (audioElement.duration) {
+                const waveform = e.currentTarget;
+                const clickX = e.clientX - waveform.getBoundingClientRect().left;
+                const width = waveform.offsetWidth;
+                const percentage = clickX / width;
+                audioElement.currentTime = audioElement.duration * percentage;
+            }
+        });
 
         // Donation modal
         let selectedSong = null;
