@@ -1,0 +1,20 @@
+{
+    "name": "Fathers Son Music",
+    "short_name": "FSM",
+    "description": "Christian music ministry helping people from exclusive church backgrounds find and follow Christ Jesus through song",
+    "icons": [
+        {
+            "src": "/assets/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#1a1a1a",
+    "background_color": "#1a1a1a",
+    "display": "standalone"
+}
