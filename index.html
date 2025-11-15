@@ -546,25 +546,41 @@
             height: 60px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 4px;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: hidden;
+            cursor: pointer;
+        }
+
+        .waveform-container::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .waveform-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .waveform-container::-webkit-scrollbar-thumb {
+            background: rgba(79, 172, 254, 0.5);
+            border-radius: 2px;
         }
 
         .waveform {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             height: 100%;
             gap: 2px;
             padding: 0 1rem;
+            min-width: 100%;
         }
 
         .wave-bar {
-            flex: 1;
+            width: 4px;
+            min-width: 4px;
             background: linear-gradient(to top, #43e97b, #4facfe);
             border-radius: 2px;
-            transition: all 0.3s ease;
+            transition: opacity 0.2s ease;
             opacity: 0.4;
-            max-width: 4px;
         }
 
         .wave-bar.active {
@@ -576,12 +592,13 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 2px;
+            width: 3px;
             height: 100%;
             background: white;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            transition: left 0.1s linear;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            transition: none;
             pointer-events: none;
+            z-index: 10;
         }
 
         .player-controls {
@@ -1847,11 +1864,22 @@
         };
 
         // Generate waveform bars
-        function generateWaveform() {
+        function generateWaveform(duration) {
             const waveform = document.getElementById('waveform');
             waveform.innerHTML = ''; // Clear existing bars
 
-            const barCount = 50;
+            // Create more bars for longer songs (1 bar per second, minimum 100 bars)
+            const barCount = duration ? Math.max(Math.floor(duration) * 2, 100) : 200;
+
+            // Calculate total width needed
+            const barWidth = 4; // px
+            const gap = 2; // px
+            const padding = 32; // 1rem * 2
+            const totalWidth = (barCount * (barWidth + gap)) + padding;
+
+            // Set waveform width
+            waveform.style.width = totalWidth + 'px';
+
             for (let i = 0; i < barCount; i++) {
                 const bar = document.createElement('div');
                 bar.className = 'wave-bar';
@@ -1887,9 +1915,14 @@
                 alert('Unable to play audio. Please try again.');
             });
 
-            // Generate waveform
+            // Generate initial waveform (will be regenerated when metadata loads)
             generateWaveform();
         }
+
+        // Regenerate waveform when metadata is loaded (we know the duration)
+        audioElement.addEventListener('loadedmetadata', () => {
+            generateWaveform(audioElement.duration);
+        });
 
         function togglePlay() {
             if (audioElement.paused) {
@@ -1913,6 +1946,11 @@
             audioElement.currentTime = 0;
             updatePlayPauseIcon();
             updatePlayhead();
+
+            // Scroll back to beginning
+            const waveformContainer = document.getElementById('waveform').parentElement;
+            waveformContainer.scrollLeft = 0;
+
             closePlayer();
         }
 
@@ -1920,13 +1958,29 @@
             document.getElementById('audioPlayer').classList.remove('active');
             audioElement.pause();
             audioElement.currentTime = 0;
+
+            // Scroll back to beginning
+            const waveformContainer = document.getElementById('waveform').parentElement;
+            waveformContainer.scrollLeft = 0;
         }
 
         function updatePlayhead() {
             if (audioElement.duration) {
                 const progress = (audioElement.currentTime / audioElement.duration) * 100;
                 const playhead = document.getElementById('playhead');
-                playhead.style.left = progress + '%';
+                const waveformContainer = document.getElementById('waveform').parentElement;
+                const waveform = document.getElementById('waveform');
+
+                // Calculate playhead position in pixels
+                const waveformWidth = waveform.offsetWidth;
+                const playheadPositionPx = (waveformWidth * progress) / 100;
+
+                playhead.style.left = playheadPositionPx + 'px';
+
+                // Auto-scroll to keep playhead visible (centered if possible)
+                const containerWidth = waveformContainer.offsetWidth;
+                const scrollPosition = playheadPositionPx - (containerWidth / 2);
+                waveformContainer.scrollLeft = Math.max(0, scrollPosition);
 
                 // Update active bars
                 const bars = document.querySelectorAll('.wave-bar');
@@ -1955,9 +2009,13 @@
         document.getElementById('waveform').addEventListener('click', (e) => {
             if (audioElement.duration) {
                 const waveform = e.currentTarget;
-                const clickX = e.clientX - waveform.getBoundingClientRect().left;
+                const waveformContainer = waveform.parentElement;
+
+                // Account for scroll position
+                const clickX = e.clientX - waveform.getBoundingClientRect().left + waveformContainer.scrollLeft;
                 const width = waveform.offsetWidth;
                 const percentage = clickX / width;
+
                 audioElement.currentTime = audioElement.duration * percentage;
             }
         });
