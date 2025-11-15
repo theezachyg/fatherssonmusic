@@ -2274,25 +2274,41 @@ Read the Bible and send up prayers`
         }
 
         // Contact form handler
-        function handleContactSubmit(event) {
+        async function handleContactSubmit(event) {
             event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const message = formData.get('message');
-            
-            // In production, you would send this to your backend/email service
-            // For now, we'll show a success message
-            alert(`Thank you for your message, ${name}! We'll get back to you at ${email} as soon as possible.`);
-            
-            // Reset form
-            event.target.reset();
-            
-            // TODO: Integrate with actual email service like:
-            // - EmailJS (emailjs.com)
-            // - Formspree (formspree.io)
-            // - Your own backend endpoint
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+
+            // Disable button and show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING...';
+
+            try {
+                // Send to Cloudflare Pages Function
+                const response = await fetch('/contact', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message || 'Thank you for your message! We will get back to you soon.');
+                    form.reset();
+                } else {
+                    alert(result.error || 'An error occurred. Please try again.');
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                alert('An error occurred. Please try again later or email us directly.');
+            } finally {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonText;
+            }
         }
 
         // Particle effects - Crosses and music notes
