@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    Website designed and developed by Instinctive
+    Marketing, Technology & Design
+    https://instinctive.xyz
+    
+    © 2025 Fathers Son Music. All rights reserved.
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fathers Son Music - Christian Music Ministry</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /*
+         * Fathers Son Music Website
+         * Design & Development by Instinctive
+         * https://instinctive.xyz
+         */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #2980b9;
+            --light: #ecf0f1;
+            --dark: #1a1a1a;
+            --gradient-1: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-2: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-3: linear-gradient(135deg, #667eea 0%, #4facfe 100%);
+            --shadow: 0 20px 60px rgba(0,0,0,0.3);
+            --shadow-hover: 0 30px 80px rgba(0,0,0,0.4);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #1a1a1a, #2c3e50, #34495e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.5rem 2rem;
+            background: rgba(26, 26, 26, 0.98);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo span {
+            display: block;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            background-image: url('https://www.shutterstock.com/shutterstock/photos/654499312/display_1500/stock-photo-family-day-concept-silhouettes-father-and-son-holding-hand-in-hand-on-meadow-autumn-sunset-654499312.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(44, 62, 80, 0.85));
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(79, 172, 254, 0.2), transparent 70%);
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3rem 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            margin-bottom: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.8rem);
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            margin-bottom: 3rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-divider {
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-1);
+            margin: 2rem auto;
+            animation: expandWidth 1.5s ease;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 4rem;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: var(--gradient-2);
+            animation: expandWidth 1s ease;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 150px; }
+        }
+
+        /* Songs Grid */
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .song-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 0;
+            padding: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .song-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .song-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .song-card:hover::before {
+            opacity: 0.15;
+        }
+
+        .song-card-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 2.5rem;
+            justify-content: space-between;
+        }
+
+        .song-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .song-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #b3e5fc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .song-date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .song-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            font-size: 1.05rem;
+        }
+
+        .song-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .song-actions .btn,
+        .song-actions .play-btn {
+            width: 100%;
+            text-align: center;
+            padding: 0.875rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .song-actions .play-btn:nth-child(1) {
+            grid-column: 1 / -1;
+        }
+
+        .play-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .play-btn:hover {
+            background: var(--gradient-1);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        /* Audio Player */
+        .audio-player {
+            position: fixed;
+            bottom: -100px;
+            left: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.5);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 999;
+            border-top: 2px solid rgba(79, 172, 254, 0.3);
+        }
+
+        .audio-player.active {
+            bottom: 0;
+        }
+
+        .player-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 250px 1fr auto auto;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .player-info {
+            flex: 0 0 auto;
+        }
+
+        .player-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .waveform-container {
+            flex: 1;
+            position: relative;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .waveform {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 2px;
+            padding: 0 1rem;
+        }
+
+        .wave-bar {
+            flex: 1;
+            background: linear-gradient(to top, #43e97b, #4facfe);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            opacity: 0.4;
+            max-width: 4px;
+        }
+
+        .wave-bar.active {
+            opacity: 1;
+            background: linear-gradient(to top, #00f2fe, #43e97b);
+        }
+
+        .playhead {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transition: left 0.1s linear;
+            pointer-events: none;
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 0;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .control-btn:hover {
+            background: var(--gradient-1);
+            transform: scale(1.1);
+        }
+
+        .close-player {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .close-player:hover {
+            color: white;
+        }
+
+        /* About Section */
+        /* About Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .about-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .about-side {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .about-text {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .about-text p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(79, 172, 254, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .info-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .info-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .mission-box {
+            background: var(--gradient-1);
+            padding: 3rem;
+            border-radius: 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .mission-box h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .mission-box p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .mission-hero {
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            text-align: center;
+        }
+
+        .mission-statement {
+            background: var(--gradient-1);
+            padding: 4rem 3rem;
+            position: relative;
+        }
+
+        .mission-statement p {
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            color: white;
+            line-height: 1.6;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .quote-icon {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 2rem;
+        }
+
+        .fa-quote-left {
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .fa-quote-right {
+            display: block;
+            margin-top: 1rem;
+            text-align: right;
+        }
+
+        .mission-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(79, 172, 254, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .mission-quote {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 3px solid;
+            border-image: var(--gradient-1) 1;
+        }
+
+        .mission-quote p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: stretch;
+        }
+
+        .contact-main {
+            display: flex;
+        }
+
+        .contact-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 3rem 2.5rem;
+            text-align: center;
+            width: 100%;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 2rem;
+            color: white;
+        }
+
+        .contact-card h3 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-card p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .contact-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-email:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-form {
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: white;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .contact-side {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        .contact-info-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-info-card:hover {
+            transform: translateX(5px);
+            border-color: rgba(79, 172, 254, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .contact-info-card .info-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info-card h4 {
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .contact-info-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+
+        /* Donation Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 0;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--dark);
+        }
+
+        .lyrics-modal .modal-content {
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .policy-modal .modal-content {
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .policy-content {
+            text-align: left;
+            line-height: 1.8;
+            color: var(--dark);
+        }
+
+        .policy-content h2 {
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .policy-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .policy-content p {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .policy-content ul {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        .policy-content li {
+            margin-bottom: 0.75rem;
+            color: #333;
+        }
+
+        .policy-content strong {
+            color: var(--primary);
+        }
+
+        .lyrics-content {
+            white-space: pre-line;
+            line-height: 2;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        .lyrics-content strong {
+            display: block;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--dark);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .donation-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .donation-btn {
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            background: white;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .donation-btn:hover {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 0;
+            font-size: 1rem;
+            margin: 1rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                background-attachment: scroll;
+            }
+
+            .songs-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .song-card-content {
+                padding: 2rem;
+            }
+
+            nav ul {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: rgba(26, 26, 26, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 5rem 2rem;
+                gap: 1rem;
+                transition: right 0.3s ease;
+            }
+
+            nav ul.active {
+                right: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .songs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .mission-features {
+                grid-template-columns: 1fr;
+            }
+
+            .mission-statement {
+                padding: 3rem 2rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .player-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .waveform-container {
+                order: 3;
+            }
+
+            .player-controls {
+                order: 2;
+                justify-content: center;
+            }
+
+            .close-player {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .donation-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Click Particle Effects */
+        .click-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1.5rem;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        .click-particle.music-note-1 {
+            color: #43e97b;
+            text-shadow: 0 0 10px rgba(67, 233, 123, 0.5);
+        }
+
+        .click-particle.music-note-2 {
+            color: #4facfe;
+            text-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+        }
+
+        .click-particle.music-note-3 {
+            color: #00f2fe;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .click-particle.cross {
+            color: #b33e3e;
+            text-shadow: 0 0 10px rgba(179, 62, 62, 0.5);
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(-10px) rotate(45deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-150px) rotate(180deg) scale(0.5);
+            }
+        }
+
+        /* Additional particle variations */
+        @keyframes floatUpLeft {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translate(-10px, -10px) rotate(-45deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-80px, -150px) rotate(-180deg) scale(0.5);
+            }
+        }
+
+        @keyframes floatUpRight {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translate(10px, -10px) rotate(45deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(80px, -150px) rotate(180deg) scale(0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <div class="logo">
+                <span>Fathers</span>
+                <span>Son</span>
+                <span>Music</span>
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul id="navMenu">
+                <li><a href="#home" onclick="closeMenu()">Home</a></li>
+                <li><a href="#songs" onclick="closeMenu()">Songs</a></li>
+                <li><a href="#about" onclick="closeMenu()">About</a></li>
+                <li><a href="#mission" onclick="closeMenu()">Mission</a></li>
+                <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Fathers Son Music</h1>
+            <div class="hero-divider"></div>
+            <p class="subtitle">The Message in the Song</p>
+            <p>Helping people from exclusive church backgrounds<br>find and follow Christ Jesus through song.</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('songs')">Listen Now</button>
+                <button class="btn btn-secondary" onclick="openDonationModal()">Support Our Mission</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Songs Section -->
+    <section id="songs" class="section">
+        <h2 class="section-title fade-in">Our Songs</h2>
+        <div class="songs-grid">
+            <div class="song-card fade-in">
+                <div class="song-card-content">
+                    <div class="song-header">
+                        <h3>MESSAGE IN THE SONG</h3>
+                        <p class="song-date">Released October 2025</p>
+                    </div>
+                    <p>A powerful reminder that it's not about the music—it's about the message. This song encourages believers to test everything against Scripture and focus on Christ, not organizations.</p>
+                    <div class="song-actions">
+                        <button class="play-btn" onclick="playSong('Message In The Song', 'A song about discerning truth through God\'s Word')">
+                            <i class="fas fa-play"></i> STREAM
+                        </button>
+                        <button class="btn btn-secondary" onclick="showLyrics('message')">
+                            <i class="fas fa-file-lines"></i> LYRICS
+                        </button>
+                        <button class="btn btn-primary" onclick="openDonationModal('Message In The Song')">
+                            <i class="fas fa-download"></i> DOWNLOAD
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="song-card fade-in">
+                <div class="song-card-content">
+                    <div class="song-header">
+                        <h3>GRANDPA NICK</h3>
+                        <p class="song-date">Released November 2025</p>
+                    </div>
+                    <p>A heartfelt story about church splits and family division. This song explores the pain of separation and the hope of reunion through Christ, not through man-made divisions.</p>
+                    <div class="song-actions">
+                        <button class="play-btn" onclick="playSong('Grandpa Nick', 'A story of church splits and family healing')">
+                            <i class="fas fa-play"></i> STREAM
+                        </button>
+                        <button class="btn btn-secondary" onclick="showLyrics('grandpa')">
+                            <i class="fas fa-file-lines"></i> LYRICS
+                        </button>
+                        <button class="btn btn-primary" onclick="openDonationModal('Grandpa Nick')">
+                            <i class="fas fa-download"></i> DOWNLOAD
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="song-card fade-in">
+                <div class="song-card-content">
+                    <div class="song-header">
+                        <h3>SPIRITUAL ABUSE</h3>
+                        <p class="song-date">Released November 2025</p>
+                    </div>
+                    <p>An honest, raw look at spiritual manipulation and control. This song speaks to those who've experienced abuse in religious settings and points them to freedom in Christ.</p>
+                    <div class="song-actions">
+                        <button class="play-btn" onclick="playSong('Spiritual Abuse', 'Finding freedom from spiritual manipulation')">
+                            <i class="fas fa-play"></i> STREAM
+                        </button>
+                        <button class="btn btn-secondary" onclick="showLyrics('spiritual')">
+                            <i class="fas fa-file-lines"></i> LYRICS
+                        </button>
+                        <button class="btn btn-primary" onclick="openDonationModal('Spiritual Abuse')">
+                            <i class="fas fa-download"></i> DOWNLOAD
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <h2 class="section-title fade-in">About</h2>
+        <div class="about-grid">
+            <div class="about-main fade-in">
+                <div class="about-text">
+                    <h3>Our Story</h3>
+                    <p>I came from an exclusive church that, like many, taught that salvation was found only in that organization. While I was raised by loving parents and most members were good people, I witnessed both the benefits and the harm of this system.</p>
+                    <p>I'm not a musician by training, but God has inspired these songs in an unlikely way. As someone who grew up where "worldly music" was forbidden, it's remarkable that I've been able to create these songs at all.</p>
+                    <p>These songs were created to help people from exclusive church backgrounds discover that salvation is through Jesus Christ alone—not through any organization or group of people.</p>
+                </div>
+            </div>
+            
+            <div class="about-side fade-in">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3>Why Anonymous?</h3>
+                    <p>This ministry is about Jesus Christ and His sacrifice for us. It's not about any individual. We want the focus to remain on Him.</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3>The Music</h3>
+                    <p>Professional musicians who are passionate about spreading the gospel helped bring these songs to life.</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Our Prayer</h3>
+                    <p>That these songs will help people from exclusive churches be led to follow Jesus Christ our Savior.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Details -->
+    <section id="mission" class="section mission-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Our Mission</h2>
+            
+            <div class="mission-hero fade-in">
+                <div class="mission-statement">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <p>Encourage people from exclusive church backgrounds to find and follow Christ Jesus through song.</p>
+                    <i class="fas fa-quote-right quote-icon"></i>
+                </div>
+            </div>
+
+            <div class="mission-features fade-in">
+                <div class="feature-card">
+                    <div class="feature-number">01</div>
+                    <h3>Why We Do This</h3>
+                    <p>We believe the audience for this music may be small, but the mission is vital. Every person who finds freedom in Christ matters infinitely.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">02</div>
+                    <h3>Our Commitment</h3>
+                    <p>We've financed all expenses for creating these songs and committed to producing at least five songs. With your support, we'll record several more that have already been written.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">03</div>
+                    <h3>Pay What You Want</h3>
+                    <p>All downloads are pay-what-you-want, including free. We want everyone to have access to these songs. Suggested donations are $5, $10, $50, or $100+.</p>
+                </div>
+            </div>
+
+            <div class="mission-quote fade-in">
+                <p>"It's not about the music—it's the message in the song."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <h2 class="section-title fade-in">Get In Touch</h2>
+        <div class="contact-grid">
+            <div class="contact-main fade-in">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Contact Us</h3>
+                    <p>We'd love to hear from you. Whether you have questions, need support, or want to share your story, please reach out.</p>
+                    
+                    <form class="contact-form" id="contactForm" onsubmit="handleContactSubmit(event)">
+                        <input type="text" name="name" placeholder="Your Name" required class="form-input">
+                        <input type="email" name="email" placeholder="Your Email" required class="form-input">
+                        <textarea name="message" placeholder="Your Message" rows="5" required class="form-textarea"></textarea>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-paper-plane"></i> SEND MESSAGE
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="contact-side fade-in">
+                <div class="contact-info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h4>Your Privacy</h4>
+                    <p>We collect email addresses only to send download links and occasional updates about new songs. We respect your privacy and won't spam you.</p>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h4>Stay Updated</h4>
+                    <p>Download any song to join our email list. You'll be the first to know when new music is released.</p>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-hands-praying"></i>
+                    </div>
+                    <h4>Prayer Support</h4>
+                    <p>Please pray for those who are finding their way from exclusive churches to a personal relationship with Christ.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audio Player -->
+    <div class="audio-player" id="audioPlayer">
+        <div class="player-content">
+            <div class="player-info">
+                <h4 id="currentSong">Song Title</h4>
+                <p id="currentDesc" style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.9rem;">Description</p>
+            </div>
+            <div class="waveform-container">
+                <div class="waveform" id="waveform"></div>
+                <div class="playhead" id="playhead"></div>
+            </div>
+            <div class="player-controls">
+                <button class="control-btn" onclick="togglePlay()">
+                    <i class="fas fa-play" id="playPauseIcon"></i>
+                </button>
+                <button class="control-btn" onclick="stopSong()">
+                    <i class="fas fa-stop"></i>
+                </button>
+            </div>
+            <button class="close-player" onclick="closePlayer()">✕</button>
+        </div>
+    </div>
+
+    <!-- Donation Modal -->
+    <div class="modal" id="donationModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeDonationModal()">×</button>
+            <h2>Download & Support</h2>
+            <p id="modalSongTitle" style="color: #666; margin-bottom: 1rem;">Choose your contribution amount</p>
+            <p style="color: #666; font-size: 0.9rem;">All songs are available for free download. Any contribution helps us create more music!</p>
+            
+            <div class="donation-options">
+                <button class="donation-btn" onclick="selectAmount('free')">Free Download</button>
+                <button class="donation-btn" onclick="selectAmount(5)">$5</button>
+                <button class="donation-btn" onclick="selectAmount(10)">$10</button>
+                <button class="donation-btn" onclick="selectAmount(50)">$50</button>
+                <button class="donation-btn" onclick="selectAmount(100)">$100</button>
+                <button class="donation-btn" onclick="selectAmount('custom')">Custom Amount</button>
+            </div>
+
+            <input type="email" class="email-input" placeholder="Your email address" id="emailInput">
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processDownload()">
+                Continue to Download
+            </button>
+            
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: #666; text-align: center;">
+                By downloading, you agree to our <a href="#" onclick="closeDonationModal(); openTermsModal(); return false;" style="color: #4facfe;">Terms & Conditions</a> and <a href="#" onclick="closeDonationModal(); openPrivacyModal(); return false;" style="color: #4facfe;">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Lyrics Modal -->
+    <div class="modal lyrics-modal" id="lyricsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLyricsModal()">×</button>
+            <h2 id="lyricsTitle">Song Lyrics</h2>
+            <div class="lyrics-content" id="lyricsContent"></div>
+            <p style="margin-top: 2rem; font-size: 0.85rem; color: #666; text-align: center;">
+                © 2025 Fathers Son Music
+            </p>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal policy-modal" id="privacyModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePrivacyModal()">×</button>
+            <div class="policy-content">
+                <h2>Privacy Policy</h2>
+                <p><strong>Last Updated: September 27, 2025</strong></p>
+                
+                <p>At Fathers Son Music ("we," "us," or "our"), we value your trust and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, share, and safeguard your data when you purchase or download our Christian music from www.FathersSonMusic.com. By using our website, you agree to this policy. Please read it carefully.</p>
+                
+                <h3>1. Information We Collect</h3>
+                <p>We collect only the information needed to provide our music and services:</p>
+                <ul>
+                    <li><strong>Purchase Information:</strong> Name, email address, and payment details (e.g., credit card or PayPal info) when you buy a song.</li>
+                    <li><strong>Account Information:</strong> If you create an account, we may collect your name, email, and password.</li>
+                    <li><strong>Technical Data:</strong> IP address, browser type, and device info (collected automatically via our website host or analytics tools).</li>
+                    <li><strong>Cookies:</strong> Our website may use cookies for functionality (e.g., checkout) or analytics (e.g., Google Analytics). You can manage cookie preferences via your browser settings.</li>
+                </ul>
+                
+                <h3>2. How We Use Your Information</h3>
+                <ul>
+                    <li>Process your music purchases and deliver download links.</li>
+                    <li>Send order confirmations and, if you opt in, updates about new music or Christian ministry events.</li>
+                    <li>Improve our website (e.g., analyze usage trends).</li>
+                    <li>Comply with legal obligations (e.g., tax reporting).</li>
+                    <li>Respond to your inquiries or support requests.</li>
+                </ul>
+                
+                <h3>3. Sharing Your Information</h3>
+                <p>We do not sell or share your personal data for marketing purposes. We may share data with:</p>
+                <ul>
+                    <li><strong>Payment Processors:</strong> (e.g., Stripe, PayPal) to process your payment securely. They have their own privacy policies.</li>
+                    <li><strong>Service Providers:</strong> Our website host or email delivery services to provide downloads or communications.</li>
+                    <li><strong>Legal Requirements:</strong> If required by law (e.g., court order), we may disclose your data to authorities.</li>
+                </ul>
+                
+                <h3>4. Your Rights</h3>
+                <ul>
+                    <li><strong>Access:</strong> Request a copy of the data we hold about you.</li>
+                    <li><strong>Correction:</strong> Ask us to fix inaccurate information.</li>
+                    <li><strong>Deletion:</strong> Request we delete your data (except where required for legal reasons, like tax records).</li>
+                    <li><strong>Opt-Out:</strong> Unsubscribe from emails via the link in our messages or contact us.</li>
+                    <li><strong>Cookies:</strong> Disable cookies in your browser, though this may affect website functionality.</li>
+                </ul>
+                
+                <h3>5. Data Security</h3>
+                <p>We protect your data with SSL encryption for website transactions, secure storage through our trusted website host and payment processors, and limited access to your data by our team. However, no online system is 100% secure. We strive to protect your information but cannot guarantee absolute security.</p>
+                
+                <h3>6. Contact Us</h3>
+                <p>For questions, requests, or concerns about your privacy, contact us through our contact form.</p>
+                
+                <p style="margin-top: 2rem; font-style: italic;">Thank you for supporting Fathers Son Music and our mission to share Christian music. We are committed to honoring your trust and privacy.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div class="modal policy-modal" id="termsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeTermsModal()">×</button>
+            <div class="policy-content">
+                <h2>Terms and Conditions for Music Purchases</h2>
+                <p><strong>Last Updated: September 27, 2025</strong></p>
+                
+                <p>Thank you for purchasing music from Fathers Son Music ("we," "us," or "our"). By purchasing or downloading our music, you ("you" or "the buyer") agree to these Terms and Conditions. Please read them carefully.</p>
+                
+                <h3>1. License and Usage Rights</h3>
+                <ul>
+                    <li><strong>Personal Use:</strong> When you purchase a song, you receive a non-exclusive, non-transferable license to download and use the music for personal, non-commercial purposes (e.g., listening, personal worship).</li>
+                    <li><strong>Church Use:</strong> If you are a church or ministry, you may use the music in worship services (e.g., playback or live performance) provided you obtain appropriate licensing from Christian Copyright Licensing International (CCLI) for activities like lyric projection or streaming.</li>
+                    <li><strong>Prohibited Uses:</strong> You may not resell, redistribute, modify, or use the music for commercial purposes (e.g., in advertisements, films, or derivative works) without our written permission. All copyrights remain with Fathers Son Music.</li>
+                    <li><strong>File Format:</strong> Songs are provided as digital downloads (e.g., MP3). You are responsible for ensuring device compatibility.</li>
+                </ul>
+                
+                <h3>2. Payment and Delivery</h3>
+                <ul>
+                    <li><strong>Payment:</strong> All purchases are processed securely via PayPal. Prices are in USD and include applicable taxes.</li>
+                    <li><strong>Delivery:</strong> After successful payment, you will receive a download link via email or directly on our website.</li>
+                    <li><strong>No Physical Products:</strong> All sales are for digital files only; no physical CDs or products are shipped.</li>
+                </ul>
+                
+                <h3>3. Refund Policy</h3>
+                <ul>
+                    <li><strong>Non-Refundable:</strong> Due to the digital nature of music downloads, all sales are final and non-refundable, except where required by law.</li>
+                    <li><strong>Exceptions:</strong> If you receive an incorrect or corrupted file, contact us within 7 days for a replacement or refund, at our discretion.</li>
+                    <li><strong>Consumer Rights:</strong> If you are in a jurisdiction with mandatory refund rights (e.g., EU), we will comply with applicable laws.</li>
+                </ul>
+                
+                <h3>4. Intellectual Property</h3>
+                <p>All songs, lyrics, and recordings are owned by Fathers Son Music and protected by U.S. and international copyright laws. Unauthorized copying, sharing, or use beyond the license granted is prohibited and may result in legal action.</p>
+                
+                <h3>5. Limitation of Liability</h3>
+                <p>We are not responsible for any loss or damage caused by using our music, including compatibility issues with your devices or software. Our total liability for any claim related to your purchase shall not exceed the amount you paid for the song(s).</p>
+                
+                <h3>6. Privacy and Data</h3>
+                <p>We collect only the information necessary to process your purchase (e.g., name, email, payment details). See our Privacy Policy for details. We do not share your data with third parties except as needed for payment processing or legal compliance.</p>
+                
+                <h3>7. Governing Law</h3>
+                <p>These Terms are governed by the laws of Arizona, United States, without regard to conflict of law principles. Any disputes will be resolved in the courts of Arizona.</p>
+                
+                <h3>8. Changes to These Terms</h3>
+                <p>We may update these Terms at any time. The version in effect at the time of your purchase applies. Check this page for the latest version.</p>
+                
+                <p style="margin-top: 2rem; font-style: italic;">Thank you for supporting Fathers Son Music. God bless!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">© 2025 Fathers Son Music. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#about">About</a>
+            <a href="#mission">Mission</a>
+            <a href="#contact">Contact</a>
+            <a href="#" onclick="openPrivacyModal(); return false;">Privacy Policy</a>
+            <a href="#" onclick="openTermsModal(); return false;">Terms & Conditions</a>
+        </div>
+        <p style="color: rgba(255,255,255,0.4); margin-top: 2rem; font-size: 0.85rem;">
+            <a href="https://instinctive.xyz?utm_source=fathersson&utm_medium=footer&utm_campaign=website_credit" target="_blank" rel="noopener noreferrer" style="color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.3s ease;">Instinctive Marketing, Technology & Design</a>
+        </p>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particles.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+
+        function closeMenu() {
+            document.getElementById('navMenu').classList.remove('active');
+        }
+
+        // Smooth scroll
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            element.scrollIntoView({ behavior: 'smooth' });
+            closeMenu();
+        }
+
+        // Audio player
+        let isPlaying = false;
+        let currentSongData = null;
+        let playheadInterval = null;
+        let playheadPosition = 0;
+
+        // Generate waveform bars
+        function generateWaveform() {
+            const waveform = document.getElementById('waveform');
+            waveform.innerHTML = ''; // Clear existing bars
+            
+            const barCount = 50;
+            for (let i = 0; i < barCount; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'wave-bar';
+                // Random heights for visual interest
+                const height = Math.random() * 60 + 20;
+                bar.style.height = height + '%';
+                waveform.appendChild(bar);
+            }
+        }
+
+        function playSong(title, description) {
+            const player = document.getElementById('audioPlayer');
+            document.getElementById('currentSong').textContent = title;
+            document.getElementById('currentDesc').textContent = description;
+            player.classList.add('active');
+            isPlaying = true;
+            currentSongData = { title, description };
+            
+            // Generate waveform and start animation
+            generateWaveform();
+            startPlayhead();
+            updatePlayPauseIcon();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            
+            if (isPlaying) {
+                startPlayhead();
+            } else {
+                stopPlayhead();
+            }
+            
+            updatePlayPauseIcon();
+        }
+
+        function updatePlayPauseIcon() {
+            const icon = document.getElementById('playPauseIcon');
+            if (isPlaying) {
+                icon.className = 'fas fa-pause';
+            } else {
+                icon.className = 'fas fa-play';
+            }
+        }
+
+        function startPlayhead() {
+            stopPlayhead(); // Clear any existing interval
+            
+            playheadInterval = setInterval(() => {
+                if (isPlaying) {
+                    playheadPosition += 0.5;
+                    
+                    // Reset at 100%
+                    if (playheadPosition >= 100) {
+                        playheadPosition = 0;
+                    }
+                    
+                    const playhead = document.getElementById('playhead');
+                    playhead.style.left = playheadPosition + '%';
+                    
+                    // Update active bars
+                    const bars = document.querySelectorAll('.wave-bar');
+                    bars.forEach((bar, index) => {
+                        const barPosition = (index / bars.length) * 100;
+                        if (barPosition <= playheadPosition) {
+                            bar.classList.add('active');
+                        } else {
+                            bar.classList.remove('active');
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        function stopPlayhead() {
+            if (playheadInterval) {
+                clearInterval(playheadInterval);
+                playheadInterval = null;
+            }
+        }
+
+        function stopSong() {
+            isPlaying = false;
+            stopPlayhead();
+            playheadPosition = 0;
+            updatePlayPauseIcon();
+            closePlayer();
+        }
+
+        function closePlayer() {
+            document.getElementById('audioPlayer').classList.remove('active');
+            stopPlayhead();
+            playheadPosition = 0;
+        }
+
+        // Donation modal
+        let selectedSong = null;
+        let selectedAmount = null;
+
+        function openDonationModal(songTitle = null) {
+            selectedSong = songTitle;
+            const modal = document.getElementById('donationModal');
+            const modalTitle = document.getElementById('modalSongTitle');
+            
+            if (songTitle) {
+                modalTitle.textContent = `Download "${songTitle}"`;
+            } else {
+                modalTitle.textContent = 'Support Our Ministry';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeDonationModal() {
+            document.getElementById('donationModal').classList.remove('active');
+        }
+
+        function selectAmount(amount) {
+            selectedAmount = amount;
+            if (amount === 'custom') {
+                const customAmount = prompt('Enter your custom donation amount:');
+                if (customAmount) {
+                    selectedAmount = parseFloat(customAmount);
+                }
+            }
+        }
+
+        function processDownload() {
+            const email = document.getElementById('emailInput').value;
+            
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            if (selectedAmount === null) {
+                alert('Please select a download option');
+                return;
+            }
+
+            // In real implementation, process payment and send download link
+            if (selectedAmount === 'free' || selectedAmount === 0) {
+                alert(`Thank you! A download link has been sent to ${email}`);
+            } else {
+                alert(`Thank you for your ${selectedAmount === 'custom' ? 'custom' : '$' + selectedAmount} donation! You will be redirected to PayPal to complete your contribution, then receive your download link at ${email}`);
+            }
+            
+            closeDonationModal();
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Close modal on outside click
+        document.getElementById('donationModal').addEventListener('click', (e) => {
+            if (e.target.id === 'donationModal') {
+                closeDonationModal();
+            }
+        });
+
+        document.getElementById('lyricsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'lyricsModal') {
+                closeLyricsModal();
+            }
+        });
+
+        document.getElementById('privacyModal').addEventListener('click', (e) => {
+            if (e.target.id === 'privacyModal') {
+                closePrivacyModal();
+            }
+        });
+
+        document.getElementById('termsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'termsModal') {
+                closeTermsModal();
+            }
+        });
+
+        // Lyrics data
+        const lyricsData = {
+            message: {
+                title: "Message In The Song",
+                lyrics: `**Chorus**
+It's not about the music
+It's the message in the song
+I don't want to lose it
+If it's bad let's move along
+
+Get out your Bible
+Gives us armor to put on
+It's totally reliable
+Teaches us that Jesus won
+
+Helps us learn the smell test
+Lets us know if somethings wrong
+Teaches us to do our best
+Should we stay or time to run
+
+**Chorus**
+It's not about the music
+It's the message in the song
+I don't want to lose it
+If it's bad let's move along
+
+**Chorus**
+It's not about the music
+It's the message in the song
+I don't want to lose it
+If it's bad let's move aloooong
+
+There's all kinds of preachers
+And churches all around
+Most of them well meaning
+Some of them just misinformed
+
+Shysters all around us
+Acting holy with no shame
+That's why we need the armor
+Get us through the smoke and haaaaze
+
+**Chorus**
+It's not about the music
+It's the message in the song
+I don't want to lose it
+If it's bad let's move along
+
+**Chorus**
+It's not about the music
+It's the message in the song
+I don't want to lose it
+If it's bad let's move aloooooonnng
+
+Based upon the Bible
+The teaching needs to be
+Centered on Christ Jesus
+Who died for you and meee
+For you and meeee...... yeaaaah!
+
+**Chorus**
+It's not about the music
+It's the message in the song
+I don't want to lose it
+If it's bad let's move along
+
+**Chorus**
+It's not about the music
+It's the message in the song
+I don't want to lose it
+If it's bad let's move aloong
+
+I don't want to lose it
+If it's bad let's move aloooong`
+            },
+            grandpa: {
+                title: "Grandpa Nick",
+                lyrics: `Well hello Grandpa Nick
+A drawing of you sits
+In my office to see
+From family history
+
+I didn't know you
+And you didn't know me
+Because our church split
+In 1973
+
+I was 8 years old
+When to me it was told
+We've got the spirit
+And the other side don't
+
+It must have been hard
+When you drove by our farm
+And it didn't feel alright
+To stop by and have a bite
+
+I remember the day
+Of your funeral I say
+Cause it was the same one
+As my Graduation
+
+Now many years have passed
+And I was aghast
+When the fights came again
+The same as way back when
+
+It caused me to dig
+Through church history
+And find the same things
+Over and over again
+
+Then I looked in God's Word
+And salvation I learned
+Is through God's one son
+Not men, groups or certain churches
+
+I hope you believed
+In our lord Jesus Christ
+And you're looking at me
+From heaven up above
+
+What a wonderful thing
+It would surely be
+For me to know you
+And you to know me`
+            },
+            spiritual: {
+                title: "Spiritual Abuse",
+                lyrics: `Is Spiritual abuse breaking you down
+Probably feels like your drowning
+People throwing out accusations
+Based on feelings and revelations
+
+It's such a dark demonic subject
+Makes one cringe just thinking of it
+A topic that's so hard to deal with
+Pray God shows us how to heal it
+
+**There's...**
+**No excuse for spiritual abuse**
+**Read the Bible cut yourself loose**
+**People driven right out of their minds**
+**That sure does seem like a horrible crime**
+
+Here is the fear and the whip
+Can't be saved less you're part of it
+Get kicked out you're bound for hell
+It's what you learned and think as well
+
+**There's...**
+**No excuse for spiritual abuse**
+**Read the Bible cut yourself loose**
+**People driven right out of their minds**
+**That sure does seem like a horrible crime**
+
+Most of us didn't read the Bible
+Just went along for our survival
+Be real careful if we read it
+Might lose faith was how they preached it
+
+My oh my this is a horrible trap
+The only way out you can't do that
+All the answers are in God's Word
+You're not supposed to open and learn
+
+**There's...**
+**No excuse for spiritual abuse**
+**Read the Bible cut yourself loose**
+**People driven right out of their minds**
+**That sure does seem like a horrible crime**
+
+Some pains do happen in your chest
+Emergency room says too much stress
+Mental breakdowns for somebody
+Put on drugs makes them a zombie
+
+If ever people need help and healing
+It's those going through this abusing
+But at this time is when everyone else
+Abandons them to save themselves
+
+**There's...**
+**No excuse for spiritual abuse**
+**Read the Bible cut yourself loose**
+**People driven right out of their minds**
+**That sure does seem like a horrible crime**
+
+Can I ask you a serious question
+Is anything untrue that I have mentioned
+If you have thought and wondered too
+Pray to God to help you through
+
+Turn to the Word it is so clear
+It's Christ who saves not men down here
+All your questions are answered there
+Read the Bible and send up prayers
+
+All your questions are answered there
+Read the Bible and send up prayers`
+            }
+        };
+
+        // Show lyrics modal
+        function showLyrics(songId) {
+            const song = lyricsData[songId];
+            if (song) {
+                document.getElementById('lyricsTitle').textContent = song.title;
+                document.getElementById('lyricsContent').innerHTML = song.lyrics.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                document.getElementById('lyricsModal').classList.add('active');
+            }
+        }
+
+        // Close lyrics modal
+        function closeLyricsModal() {
+            document.getElementById('lyricsModal').classList.remove('active');
+        }
+
+        // Privacy Policy modal
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').classList.add('active');
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').classList.remove('active');
+        }
+
+        // Terms & Conditions modal
+        function openTermsModal() {
+            document.getElementById('termsModal').classList.add('active');
+        }
+
+        function closeTermsModal() {
+            document.getElementById('termsModal').classList.remove('active');
+        }
+
+        // Contact form handler
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const message = formData.get('message');
+            
+            // In production, you would send this to your backend/email service
+            // For now, we'll show a success message
+            alert(`Thank you for your message, ${name}! We'll get back to you at ${email} as soon as possible.`);
+            
+            // Reset form
+            event.target.reset();
+            
+            // TODO: Integrate with actual email service like:
+            // - EmailJS (emailjs.com)
+            // - Formspree (formspree.io)
+            // - Your own backend endpoint
+        }
+
+        // Particle effects - Crosses and music notes
+        const particleIcons = [
+            { class: 'music-note-1', icon: 'fa-music' },
+            { class: 'music-note-2', icon: 'fa-music' },
+            { class: 'music-note-3', icon: 'fa-music' },
+            { class: 'music-note-1', icon: 'fa-music' },
+            { class: 'music-note-2', icon: 'fa-music' },
+            { class: 'cross', icon: 'fa-cross' }
+        ];
+
+        const particleAnimations = ['floatUp', 'floatUpLeft', 'floatUpRight'];
+
+        // Throttle function to limit particle creation
+        let lastParticleTime = 0;
+        const particleThrottle = 150; // milliseconds between particle bursts
+
+        document.addEventListener('mousemove', (e) => {
+            const currentTime = Date.now();
+            
+            // Don't create particles when over buttons, links, or modals
+            if (e.target.closest('button') || 
+                e.target.closest('a') || 
+                e.target.closest('.modal-content') ||
+                e.target.closest('nav') ||
+                e.target.closest('.audio-player')) {
+                return;
+            }
+
+            // Throttle particle creation
+            if (currentTime - lastParticleTime < particleThrottle) {
+                return;
+            }
+
+            lastParticleTime = currentTime;
+
+            // Create 1-2 particles per movement (subtle sparkle)
+            const particleCount = Math.random() > 0.5 ? 2 : 1;
+            
+            for (let i = 0; i < particleCount; i++) {
+                createParticle(e.clientX, e.clientY, i);
+            }
+        });
+
+        function createParticle(x, y, index) {
+            const particle = document.createElement('div');
+            const randomParticle = particleIcons[Math.floor(Math.random() * particleIcons.length)];
+            const randomAnimation = particleAnimations[Math.floor(Math.random() * particleAnimations.length)];
+            
+            particle.className = `click-particle ${randomParticle.class}`;
+            particle.innerHTML = `<i class="fas ${randomParticle.icon}"></i>`;
+            
+            // Random offset for visual variety
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+            
+            particle.style.left = (x + offsetX) + 'px';
+            particle.style.top = (y + offsetY) + 'px';
+            particle.style.animation = `${randomAnimation} ${1.5 + Math.random()}s ease-out forwards`;
+            particle.style.animationDelay = (index * 0.05) + 's';
+            
+            // Smaller size for subtle sparkle effect
+            const size = 0.6 + Math.random() * 0.5;
+            particle.style.fontSize = size + 'rem';
+            
+            // Slightly reduced opacity for subtlety
+            particle.style.opacity = 0.7 + Math.random() * 0.3;
+            
+            document.body.appendChild(particle);
+            
+            // Remove particle after animation
+            setTimeout(() => {
+                particle.remove();
+            }, 2500);
+        }
+
+        /*
+         * Website by Instinctive - Marketing, Technology & Design
+         * https://instinctive.xyz
+         */
+    </script>
+</body>
+</html>
