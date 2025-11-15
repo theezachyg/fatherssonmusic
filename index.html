@@ -1500,7 +1500,7 @@
             <p>Helping people from exclusive church backgrounds<br>find and follow Christ Jesus through song.</p>
             <div class="cta-buttons">
                 <button class="btn btn-primary" onclick="scrollToSection('songs')">Listen Now</button>
-                <button class="btn btn-secondary" onclick="openDonationModal()">Support Our Mission</button>
+                <button class="btn btn-secondary" onclick="openGivingModal()">Support Our Mission</button>
             </div>
         </div>
     </section>
@@ -1729,6 +1729,35 @@
         </div>
     </div>
 
+    <!-- Giving/Donation Modal -->
+    <div class="modal" id="givingModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeGivingModal()">×</button>
+            <h2>Support Our Mission</h2>
+            <p style="color: #666; margin-bottom: 1rem;">Help us create more Christian music and reach those from exclusive church backgrounds</p>
+            <p style="color: #666; font-size: 0.9rem;">Your generous gift enables us to continue writing, recording, and sharing songs that point people to Christ!</p>
+
+            <div class="donation-options">
+                <button class="donation-btn" onclick="selectGivingAmount(25)">$25</button>
+                <button class="donation-btn" onclick="selectGivingAmount(50)">$50</button>
+                <button class="donation-btn" onclick="selectGivingAmount(100)">$100</button>
+                <button class="donation-btn" onclick="selectGivingAmount(250)">$250</button>
+                <button class="donation-btn" onclick="selectGivingAmount(500)">$500</button>
+                <button class="donation-btn" onclick="selectGivingAmount('custom')">Custom Amount</button>
+            </div>
+
+            <input type="email" class="email-input" placeholder="Your email address (for receipt)" id="givingEmailInput">
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processGiving()">
+                <i class="fas fa-heart"></i> Continue to Give
+            </button>
+
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: #666; text-align: center;">
+                Thank you for your support! Read our <a href="#" onclick="closeGivingModal(); openPrivacyModal(); return false;" style="color: #4facfe;">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+
     <!-- Donation Modal -->
     <div class="modal" id="donationModal">
         <div class="modal-content">
@@ -1736,7 +1765,7 @@
             <h2>Download & Support</h2>
             <p id="modalSongTitle" style="color: #666; margin-bottom: 1rem;">Choose your contribution amount</p>
             <p style="color: #666; font-size: 0.9rem;">All songs are available for free download. Any contribution helps us create more music!</p>
-            
+
             <div class="donation-options">
                 <button class="donation-btn" onclick="selectAmount('free')">Free Download</button>
                 <button class="donation-btn" onclick="selectAmount(5)">$5</button>
@@ -1747,11 +1776,11 @@
             </div>
 
             <input type="email" class="email-input" placeholder="Your email address" id="emailInput">
-            
+
             <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processDownload()">
                 Continue to Download
             </button>
-            
+
             <p style="margin-top: 1rem; font-size: 0.85rem; color: #666; text-align: center;">
                 By downloading, you agree to our <a href="#" onclick="closeDonationModal(); openTermsModal(); return false;" style="color: #4facfe;">Terms & Conditions</a> and <a href="#" onclick="closeDonationModal(); openPrivacyModal(); return false;" style="color: #4facfe;">Privacy Policy</a>
             </p>
@@ -2142,17 +2171,59 @@
         let selectedSong = null;
         let selectedAmount = null;
 
+        // Giving modal (for general donations)
+        let selectedGivingAmount = null;
+
+        function openGivingModal() {
+            document.getElementById('givingModal').classList.add('active');
+        }
+
+        function closeGivingModal() {
+            document.getElementById('givingModal').classList.remove('active');
+        }
+
+        function selectGivingAmount(amount) {
+            selectedGivingAmount = amount;
+            if (amount === 'custom') {
+                const customAmount = prompt('Enter your custom gift amount:');
+                if (customAmount) {
+                    selectedGivingAmount = parseFloat(customAmount);
+                }
+            }
+        }
+
+        function processGiving() {
+            const email = document.getElementById('givingEmailInput').value;
+
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address for your receipt');
+                return;
+            }
+
+            if (selectedGivingAmount === null) {
+                alert('Please select a gift amount');
+                return;
+            }
+
+            // In real implementation, process payment through PayPal, Stripe, etc.
+            alert(`Thank you for your generous gift of $${selectedGivingAmount}! You will be redirected to complete your donation, and a receipt will be sent to ${email}`);
+
+            closeGivingModal();
+            selectedGivingAmount = null;
+        }
+
+        // Donation modal (for song downloads)
         function openDonationModal(songTitle = null) {
             selectedSong = songTitle;
             const modal = document.getElementById('donationModal');
             const modalTitle = document.getElementById('modalSongTitle');
-            
+
             if (songTitle) {
                 modalTitle.textContent = `Download "${songTitle}"`;
             } else {
                 modalTitle.textContent = 'Support Our Ministry';
             }
-            
+
             modal.classList.add('active');
         }
 
@@ -2172,7 +2243,7 @@
 
         function processDownload() {
             const email = document.getElementById('emailInput').value;
-            
+
             if (!email || !email.includes('@')) {
                 alert('Please enter a valid email address');
                 return;
@@ -2189,7 +2260,7 @@
             } else {
                 alert(`Thank you for your ${selectedAmount === 'custom' ? 'custom' : '$' + selectedAmount} donation! You will be redirected to PayPal to complete your contribution, then receive your download link at ${email}`);
             }
-            
+
             closeDonationModal();
         }
 
@@ -2237,6 +2308,12 @@
         document.getElementById('subscribeModal').addEventListener('click', (e) => {
             if (e.target.id === 'subscribeModal') {
                 closeSubscribeModal();
+            }
+        });
+
+        document.getElementById('givingModal').addEventListener('click', (e) => {
+            if (e.target.id === 'givingModal') {
+                closeGivingModal();
             }
         });
 
