@@ -20,6 +20,9 @@
     <link rel="manifest" href="assets/site.webmanifest">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Contentful SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
     <style>
         /*
          * Fathers Son Music Website
@@ -1538,69 +1541,12 @@
     <!-- Songs Section -->
     <section id="songs" class="section">
         <h2 class="section-title fade-in">Our Songs</h2>
-        <div class="songs-grid">
-            <div class="song-card fade-in" data-song="message">
-                <div class="song-card-content">
-                    <div class="song-header">
-                        <h3>MESSAGE IN THE SONG</h3>
-                        <p class="song-date">Released October 2025</p>
-                    </div>
-                    <p>A powerful reminder that it's not about the music—it's about the message. This song encourages believers to test everything against Scripture and focus on Christ, not organizations.</p>
-                    <div class="song-actions">
-                        <button class="play-btn" onclick="playSong('Message In The Song', 'A song about discerning truth through God\'s Word')">
-                            <i class="fas fa-play"></i> STREAM
-                        </button>
-                        <button class="btn btn-secondary" onclick="showLyrics('message')">
-                            <i class="fas fa-file-lines"></i> LYRICS
-                        </button>
-                        <button class="btn btn-primary" onclick="openDonationModal('Message In The Song')">
-                            <i class="fas fa-download"></i> DOWNLOAD
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="song-card fade-in" data-song="grandpa">
-                <div class="song-card-content">
-                    <div class="song-header">
-                        <h3>GRANDPA NICK</h3>
-                        <p class="song-date">Released November 2025</p>
-                    </div>
-                    <p>A heartfelt story about church splits and family division. This song explores the pain of separation and the hope of reunion through Christ, not through man-made divisions.</p>
-                    <div class="song-actions">
-                        <button class="play-btn" onclick="playSong('Grandpa Nick', 'A story of church splits and family healing')">
-                            <i class="fas fa-play"></i> STREAM
-                        </button>
-                        <button class="btn btn-secondary" onclick="showLyrics('grandpa')">
-                            <i class="fas fa-file-lines"></i> LYRICS
-                        </button>
-                        <button class="btn btn-primary" onclick="openDonationModal('Grandpa Nick')">
-                            <i class="fas fa-download"></i> DOWNLOAD
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="song-card fade-in" data-song="spiritual">
-                <div class="song-card-content">
-                    <div class="song-header">
-                        <h3>SPIRITUAL ABUSE</h3>
-                        <p class="song-date">Released November 2025</p>
-                    </div>
-                    <p>An honest, raw look at spiritual manipulation and control. This song speaks to those who've experienced abuse in religious settings and points them to freedom in Christ.</p>
-                    <div class="song-actions">
-                        <button class="play-btn" onclick="playSong('Spiritual Abuse', 'Finding freedom from spiritual manipulation')">
-                            <i class="fas fa-play"></i> STREAM
-                        </button>
-                        <button class="btn btn-secondary" onclick="showLyrics('spiritual')">
-                            <i class="fas fa-file-lines"></i> LYRICS
-                        </button>
-                        <button class="btn btn-primary" onclick="openDonationModal('Spiritual Abuse')">
-                            <i class="fas fa-download"></i> DOWNLOAD
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div id="songsLoading" style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.7);">
+            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <p>Loading songs...</p>
+        </div>
+        <div class="songs-grid" id="songsGrid" style="display: none;">
+            <!-- Songs will be dynamically loaded from Contentful -->
         </div>
     </section>
 
@@ -1987,6 +1933,197 @@
     </footer>
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // ==========================================
+        // CONTENTFUL CMS INTEGRATION
+        // ==========================================
+
+        // Initialize Contentful client
+        const contentfulClient = contentful.createClient({
+            space: '308hvpg1ay69',
+            accessToken: '8GsuEPM4_XaiLPbR-hSiXJEBTbd6qHrQFmKj1K-mPgc'
+        });
+
+        // Global song data storage
+        let contentfulSongs = [];
+        let contentfulSongFiles = {};
+        let contentfulLyricsData = {};
+
+        // Format date for display
+        function formatReleaseDate(dateString) {
+            const date = new Date(dateString);
+            const options = { month: 'long', year: 'numeric' };
+            return 'Released ' + date.toLocaleDateString('en-US', options);
+        }
+
+        // Convert Contentful Rich Text to HTML for lyrics
+        function richTextToHTML(richText) {
+            if (!richText || !richText.content) return '';
+
+            let html = '';
+            richText.content.forEach(node => {
+                if (node.nodeType === 'paragraph') {
+                    let text = '';
+                    node.content.forEach(textNode => {
+                        if (textNode.nodeType === 'text') {
+                            let content = textNode.value;
+                            // Apply marks (bold, italic, etc.)
+                            if (textNode.marks && textNode.marks.length > 0) {
+                                textNode.marks.forEach(mark => {
+                                    if (mark.type === 'bold') {
+                                        content = `**${content}**`;
+                                    }
+                                });
+                            }
+                            text += content;
+                        }
+                    });
+                    html += text + '\n';
+                }
+            });
+            return html;
+        }
+
+        // Fetch and render songs from Contentful
+        async function loadSongsFromContentful() {
+            try {
+                const response = await contentfulClient.getEntries({
+                    content_type: 'song',
+                    order: 'fields.displayOrder'
+                });
+
+                contentfulSongs = response.items;
+
+                // Hide loading, show grid
+                document.getElementById('songsLoading').style.display = 'none';
+                document.getElementById('songsGrid').style.display = 'grid';
+
+                const songsGrid = document.getElementById('songsGrid');
+                songsGrid.innerHTML = '';
+
+                response.items.forEach(song => {
+                    const fields = song.fields;
+
+                    // Skip unpublished songs
+                    if (!fields.publishStatus) return;
+
+                    const songCard = createSongCard(fields);
+                    songsGrid.appendChild(songCard);
+
+                    // Build song files mapping for audio player
+                    if (fields.streamingAudioFile) {
+                        contentfulSongFiles[fields.songTitle] = 'https:' + fields.streamingAudioFile.fields.file.url;
+                    }
+
+                    // Build lyrics data
+                    if (fields.lyrics) {
+                        contentfulLyricsData[fields.slugId] = {
+                            title: fields.songTitle,
+                            lyrics: richTextToHTML(fields.lyrics)
+                        };
+                    }
+                });
+
+                // Update global songFiles for audio player
+                Object.assign(songFiles, contentfulSongFiles);
+
+                // Update global lyricsData
+                Object.assign(lyricsData, contentfulLyricsData);
+
+            } catch (error) {
+                console.error('Error loading songs from Contentful:', error);
+                document.getElementById('songsLoading').innerHTML =
+                    '<p style="color: #ff6b6b;">Error loading songs. Please try again later.</p>';
+            }
+        }
+
+        // Create a song card element
+        function createSongCard(fields) {
+            const card = document.createElement('div');
+            card.className = 'song-card fade-in';
+            card.dataset.song = fields.slugId;
+
+            // Add background image if available
+            if (fields.backgroundArtwork) {
+                card.style.backgroundImage = `url(https:${fields.backgroundArtwork.fields.file.url})`;
+            }
+
+            const content = document.createElement('div');
+            content.className = 'song-card-content';
+
+            // Song header
+            const header = document.createElement('div');
+            header.className = 'song-header';
+
+            const title = document.createElement('h3');
+            title.textContent = fields.songTitle.toUpperCase();
+
+            const releaseDate = document.createElement('p');
+            releaseDate.className = 'song-date';
+            releaseDate.textContent = fields.comingSoonFlag ? 'Coming Soon' : formatReleaseDate(fields.releaseDate);
+
+            header.appendChild(title);
+            header.appendChild(releaseDate);
+
+            // Description
+            const description = document.createElement('p');
+            description.textContent = fields.songDescription || '';
+
+            // Actions
+            const actions = document.createElement('div');
+            actions.className = 'song-actions';
+
+            // Coming Soon state - only show coming soon message
+            if (fields.comingSoonFlag) {
+                const comingSoonText = document.createElement('p');
+                comingSoonText.style.cssText = 'text-align: center; color: rgba(255,255,255,0.8); font-weight: 600; padding: 1rem;';
+                comingSoonText.innerHTML = '<i class="fas fa-clock"></i> This song will be available soon!';
+                actions.appendChild(comingSoonText);
+            } else {
+                // Stream button (if enabled)
+                if (fields.streamingToggle && fields.streamingAudioFile) {
+                    const streamBtn = document.createElement('button');
+                    streamBtn.className = 'play-btn';
+                    streamBtn.innerHTML = '<i class="fas fa-play"></i> STREAM';
+                    streamBtn.onclick = () => playSong(fields.songTitle, fields.shortDescription || fields.songDescription);
+                    actions.appendChild(streamBtn);
+                }
+
+                // Lyrics button (if enabled)
+                if (fields.lyricsToggle && fields.lyrics) {
+                    const lyricsBtn = document.createElement('button');
+                    lyricsBtn.className = 'btn btn-secondary';
+                    lyricsBtn.innerHTML = '<i class="fas fa-file-lines"></i> LYRICS';
+                    lyricsBtn.onclick = () => showLyrics(fields.slugId);
+                    actions.appendChild(lyricsBtn);
+                }
+
+                // Download button (if enabled)
+                if (fields.downloadsToggle && fields.downloadAudioFile) {
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.className = 'btn btn-primary';
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
+                    downloadBtn.onclick = () => openDonationModal(fields.songTitle);
+                    actions.appendChild(downloadBtn);
+                }
+            }
+
+            content.appendChild(header);
+            content.appendChild(description);
+            content.appendChild(actions);
+            card.appendChild(content);
+
+            return card;
+        }
+
+        // Load songs when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSongsFromContentful();
+        });
+
+        // ==========================================
+        // END CONTENTFUL INTEGRATION
+        // ==========================================
+
         // Particles
         function createParticles() {
             const particles = document.getElementById('particles');
