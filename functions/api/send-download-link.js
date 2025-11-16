@@ -59,7 +59,7 @@ export async function onRequestPost(context) {
 
                     <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ddd;">
                     <p style="font-size: 0.85rem; color: #666;">
-                        Visit our website: <a href="https://fatherssonmusic.pages.dev">fatherssonmusic.pages.dev</a><br>
+                        Visit our website: <a href="https://fatherssonmusic.com">fatherssonmusic.com</a><br>
                         Listen to more songs and support our ministry
                     </p>
                 `

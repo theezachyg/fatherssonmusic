@@ -158,7 +158,7 @@ For each event:
 ## Step 8: Test Your Setup
 
 1. In GTM, click **Preview**
-2. Enter your website URL: `https://fatherssonmusic.pages.dev`
+2. Enter your website URL: `https://fatherssonmusic.com`
 3. Test these actions:
    - ✓ Play a song
    - ✓ Click download and select free download

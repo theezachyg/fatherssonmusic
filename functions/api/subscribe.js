@@ -50,7 +50,7 @@ export async function onRequestPost(context) {
                     <p>In Christ,<br>Fathers Son Music</p>
                     <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ddd;">
                     <p style="font-size: 0.85rem; color: #666;">
-                        Visit our website: <a href="https://fatherssonmusic.pages.dev">fatherssonmusic.pages.dev</a>
+                        Visit our website: <a href="https://fatherssonmusic.com">fatherssonmusic.com</a>
                     </p>
                 `
             })
