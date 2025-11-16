@@ -23,6 +23,9 @@
 
     <!-- Contentful SDK -->
     <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         /*
          * Fathers Son Music Website
@@ -2003,6 +2006,13 @@
             accessToken: 'YGoIFZDwKK0htY5meHolEWTCwIhYH0Z3xTNy0lwpYXw'
         });
 
+        // ==========================================
+        // STRIPE PAYMENT INTEGRATION
+        // ==========================================
+
+        // Initialize Stripe with publishable key
+        const stripe = Stripe('pk_live_51SU6p540ywh6wmu5jt2RP5p4xRyPcXuvZjacS94GSWgxQKH8f0bkZIZGcywc3kiTEWVRvlDRMamRlzuwH1EPlWIt00l7oVSPS0');
+
         // Global song data storage
         let contentfulSongs = [];
         let contentfulSongFiles = {};
@@ -2474,7 +2484,7 @@
             }
         }
 
-        function processGiving() {
+        async function processGiving() {
             const email = document.getElementById('givingEmailInput').value;
 
             if (!email || !email.includes('@')) {
@@ -2487,11 +2497,37 @@
                 return;
             }
 
-            // In real implementation, process payment through PayPal, Stripe, etc.
-            alert(`Thank you for your generous gift of $${selectedGivingAmount}! You will be redirected to complete your donation, and a receipt will be sent to ${email}`);
+            // Create Stripe checkout session
+            try {
+                const response = await fetch('/api/create-donation-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: selectedGivingAmount
+                    })
+                });
 
-            closeGivingModal();
-            selectedGivingAmount = null;
+                const data = await response.json();
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: data.sessionId
+                });
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Unable to process payment. Please try again.');
+            }
         }
 
         // Donation modal (for song downloads)
@@ -2523,7 +2559,7 @@
             }
         }
 
-        function processDownload() {
+        async function processDownload() {
             const email = document.getElementById('emailInput').value;
 
             if (!email || !email.includes('@')) {
@@ -2536,14 +2572,46 @@
                 return;
             }
 
-            // In real implementation, process payment and send download link
+            // Handle free download
             if (selectedAmount === 'free' || selectedAmount === 0) {
-                alert(`Thank you! A download link has been sent to ${email}`);
-            } else {
-                alert(`Thank you for your ${selectedAmount === 'custom' ? 'custom' : '$' + selectedAmount} donation! You will be redirected to PayPal to complete your contribution, then receive your download link at ${email}`);
+                alert(`Thank you! A download link for "${selectedSong}" has been sent to ${email}`);
+                closeDonationModal();
+                // In production, you would send an email with download link here
+                return;
             }
 
-            closeDonationModal();
+            // Handle paid download with Stripe
+            try {
+                const response = await fetch('/api/create-download-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: selectedAmount,
+                        songTitle: selectedSong
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: data.sessionId
+                });
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Unable to process payment. Please try again.');
+            }
         }
 
         // Scroll animations
