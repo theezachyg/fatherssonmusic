@@ -8,6 +8,14 @@
     © 2025 Fathers Son Music. All rights reserved.
 -->
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WWC8RG79');</script>
+    <!-- End Google Tag Manager -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fathers Son Music - Christian Music Ministry</title>
@@ -1588,6 +1596,11 @@
     </style>
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WWC8RG79"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <div class="bg-animation"></div>
     <div class="particles" id="particles"></div>
 
@@ -2049,6 +2062,27 @@
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // ==========================================
+        // GOOGLE TAG MANAGER DATA LAYER
+        // ==========================================
+
+        window.dataLayer = window.dataLayer || [];
+
+        // Helper function to push events to GTM
+        function pushDataLayerEvent(event, data = {}) {
+            window.dataLayer.push({
+                event: event,
+                ...data
+            });
+        }
+
+        // Track page view
+        pushDataLayerEvent('page_view', {
+            page_title: document.title,
+            page_location: window.location.href,
+            page_path: window.location.pathname
+        });
+
+        // ==========================================
         // CONTENTFUL CMS INTEGRATION
         // ==========================================
 
@@ -2401,7 +2435,15 @@
 
             // Show player and play
             player.classList.add('active');
-            audioElement.play().catch(error => {
+            audioElement.play().then(() => {
+                // Track song play event
+                pushDataLayerEvent('song_play', {
+                    song_title: title,
+                    song_description: description,
+                    content_type: 'audio',
+                    engagement_type: 'stream'
+                });
+            }).catch(error => {
                 console.error('Error playing audio:', error);
                 alert('Unable to play audio. Please try again.');
             });
@@ -2598,6 +2640,19 @@
                     return;
                 }
 
+                // Track begin checkout event
+                pushDataLayerEvent('begin_checkout', {
+                    currency: 'USD',
+                    value: finalAmount,
+                    transaction_type: 'donation',
+                    items: [{
+                        item_name: 'Donation to Fathers Son Music',
+                        item_category: 'Donation',
+                        price: finalAmount,
+                        quantity: 1
+                    }]
+                });
+
                 // Redirect to Stripe Checkout
                 const result = await stripe.redirectToCheckout({
                     sessionId: data.sessionId
@@ -2701,6 +2756,14 @@
                     const result = await response.json();
 
                     if (result.success) {
+                        // Track free download event
+                        pushDataLayerEvent('free_download', {
+                            song_title: selectedSong,
+                            download_type: 'free',
+                            value: 0,
+                            currency: 'USD'
+                        });
+
                         alert(`Thank you! A download link for "${selectedSong}" has been sent to ${email}`);
                         closeDonationModal();
                     } else {
@@ -2744,6 +2807,19 @@
                     alert('Error: ' + data.error);
                     return;
                 }
+
+                // Track begin checkout event
+                pushDataLayerEvent('begin_checkout', {
+                    currency: 'USD',
+                    value: finalAmount,
+                    transaction_type: 'download',
+                    items: [{
+                        item_name: selectedSong,
+                        item_category: 'Song Download',
+                        price: finalAmount,
+                        quantity: 1
+                    }]
+                });
 
                 // Redirect to Stripe Checkout
                 const result = await stripe.redirectToCheckout({
@@ -3087,6 +3163,12 @@ Read the Bible and send up prayers`
                 const result = await response.json();
 
                 if (result.success) {
+                    // Track newsletter subscription
+                    pushDataLayerEvent('newsletter_signup', {
+                        method: 'website_modal',
+                        form_name: 'subscribe'
+                    });
+
                     alert(`Thank you for subscribing, ${firstName}! We've sent a confirmation email to ${email}.`);
                     form.reset();
                     closeSubscribeModal();
@@ -3134,6 +3216,12 @@ Read the Bible and send up prayers`
                 const result = await response.json();
 
                 if (result.success) {
+                    // Track contact form submission
+                    pushDataLayerEvent('contact_form_submit', {
+                        method: 'website_form',
+                        form_name: 'contact'
+                    });
+
                     alert(result.message || 'Thank you for your message! We will get back to you soon.');
                     form.reset();
                 } else {
