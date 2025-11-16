@@ -2029,6 +2029,13 @@
                 // Update global lyricsData
                 Object.assign(lyricsData, contentfulLyricsData);
 
+                // Trigger fade-in animation for dynamically loaded cards
+                setTimeout(() => {
+                    document.querySelectorAll('.song-card.fade-in').forEach(card => {
+                        card.classList.add('visible');
+                    });
+                }, 100);
+
             } catch (error) {
                 console.error('Error loading songs from Contentful:', error);
                 document.getElementById('songsLoading').innerHTML =
