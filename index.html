@@ -2674,11 +2674,42 @@
                 return;
             }
 
+            // Get download URL for the selected song from Contentful
+            const selectedSongData = contentfulSongs.find(song => song.fields.songTitle === selectedSong);
+            if (!selectedSongData || !selectedSongData.fields.downloadAudioFile) {
+                alert('Download not available for this song. Please contact us.');
+                return;
+            }
+
+            const downloadUrl = 'https:' + selectedSongData.fields.downloadAudioFile.fields.file.url;
+
             // Handle free download
             if (selectedAmount === 'free' || selectedAmount === 0) {
-                alert(`Thank you! A download link for "${selectedSong}" has been sent to ${email}`);
-                closeDonationModal();
-                // In production, you would send an email with download link here
+                try {
+                    const response = await fetch('/api/send-download-link', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email,
+                            songTitle: selectedSong,
+                            downloadUrl
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert(`Thank you! A download link for "${selectedSong}" has been sent to ${email}`);
+                        closeDonationModal();
+                    } else {
+                        throw new Error(result.error || 'Failed to send download link');
+                    }
+                } catch (error) {
+                    console.error('Free download error:', error);
+                    alert('Error sending download link. Please try again.');
+                }
                 return;
             }
 
@@ -2702,7 +2733,8 @@
                     },
                     body: JSON.stringify({
                         amount: finalAmount,
-                        songTitle: selectedSong
+                        songTitle: selectedSong,
+                        downloadUrl
                     })
                 });
 
@@ -3044,13 +3076,23 @@ Read the Bible and send up prayers`
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SUBSCRIBING...';
 
             try {
-                // TODO: Integrate with email service (e.g., Mailchimp, ConvertKit, or custom backend)
-                // For now, simulate success
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const response = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ firstName, lastName, email })
+                });
 
-                alert(`Thank you for subscribing, ${firstName}! We'll notify you at ${email} when new songs are released.`);
-                form.reset();
-                closeSubscribeModal();
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Thank you for subscribing, ${firstName}! We've sent a confirmation email to ${email}.`);
+                    form.reset();
+                    closeSubscribeModal();
+                } else {
+                    throw new Error(result.error || 'Failed to subscribe');
+                }
             } catch (error) {
                 console.error('Subscribe form error:', error);
                 alert('An error occurred. Please try again later.');
@@ -3075,10 +3117,18 @@ Read the Bible and send up prayers`
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING...';
 
             try {
-                // Send to Cloudflare Pages Function
-                const response = await fetch('/contact', {
+                // Get form values
+                const name = formData.get('name');
+                const email = formData.get('email');
+                const message = formData.get('message');
+
+                // Send to API
+                const response = await fetch('/api/contact', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, message })
                 });
 
                 const result = await response.json();

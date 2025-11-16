@@ -5,7 +5,7 @@
 
 export async function onRequestPost(context) {
     try {
-        const { amount, songTitle } = await context.request.json();
+        const { amount, songTitle, downloadUrl } = await context.request.json();
 
         // Validate inputs
         if (!amount || amount < 1) {
@@ -15,8 +15,8 @@ export async function onRequestPost(context) {
             });
         }
 
-        if (!songTitle) {
-            return new Response(JSON.stringify({ error: 'Song title required' }), {
+        if (!songTitle || !downloadUrl) {
+            return new Response(JSON.stringify({ error: 'Song title and download URL required' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -47,7 +47,9 @@ export async function onRequestPost(context) {
                 'line_items[0][price_data][unit_amount]': (amount * 100).toString(),
                 'line_items[0][quantity]': '1',
                 'success_url': `${new URL(context.request.url).origin}/success.html?session_id={CHECKOUT_SESSION_ID}&song=${encodeURIComponent(songTitle)}`,
-                'cancel_url': `${new URL(context.request.url).origin}/#songs`
+                'cancel_url': `${new URL(context.request.url).origin}/#songs`,
+                'metadata[songTitle]': songTitle,
+                'metadata[downloadUrl]': downloadUrl
             })
         });
 
