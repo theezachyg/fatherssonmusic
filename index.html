@@ -1297,6 +1297,37 @@
             margin: 1rem 0;
         }
 
+        .currency-input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .currency-input-wrapper .dollar-sign {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #666;
+            pointer-events: none;
+        }
+
+        .currency-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 2.5rem;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .currency-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
         /* Subscribe Section */
         .subscribe-section {
             padding: 6rem 2rem;
@@ -1792,8 +1823,11 @@
                 <button class="donation-btn" onclick="selectGivingAmount('custom', this)">Custom Amount</button>
             </div>
 
-            <div id="givingCustomAmountField" style="display: none; margin-top: 1rem;">
-                <input type="number" class="email-input" placeholder="Enter custom amount" id="givingCustomInput" min="1" step="1">
+            <div id="givingCustomAmountField" style="display: none;">
+                <div class="currency-input-wrapper">
+                    <span class="dollar-sign">$</span>
+                    <input type="number" class="currency-input" placeholder="0.00" id="givingCustomInput" min="1" step="0.01">
+                </div>
             </div>
 
             <input type="email" class="email-input" placeholder="Your email address (for receipt)" id="givingEmailInput" style="margin-top: 1rem;">
@@ -1825,8 +1859,11 @@
                 <button class="donation-btn" onclick="selectAmount('custom', this)">Custom Amount</button>
             </div>
 
-            <div id="customAmountField" style="display: none; margin-top: 1rem;">
-                <input type="number" class="email-input" placeholder="Enter custom amount" id="customInput" min="1" step="1">
+            <div id="customAmountField" style="display: none;">
+                <div class="currency-input-wrapper">
+                    <span class="dollar-sign">$</span>
+                    <input type="number" class="currency-input" placeholder="0.00" id="customInput" min="1" step="0.01">
+                </div>
             </div>
 
             <input type="email" class="email-input" placeholder="Your email address" id="emailInput" style="margin-top: 1rem;">
