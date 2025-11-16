@@ -1281,6 +1281,13 @@
             transform: scale(1.05);
         }
 
+        .donation-btn.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+
         .email-input {
             width: 100%;
             padding: 1rem;
@@ -1776,16 +1783,20 @@
             <p style="color: #666; margin-bottom: 1rem;">Help us create more Christian music and reach those from exclusive church backgrounds</p>
             <p style="color: #666; font-size: 0.9rem;">Your generous gift enables us to continue writing, recording, and sharing songs that point people to Christ!</p>
 
-            <div class="donation-options">
-                <button class="donation-btn" onclick="selectGivingAmount(25)">$25</button>
-                <button class="donation-btn" onclick="selectGivingAmount(50)">$50</button>
-                <button class="donation-btn" onclick="selectGivingAmount(100)">$100</button>
-                <button class="donation-btn" onclick="selectGivingAmount(250)">$250</button>
-                <button class="donation-btn" onclick="selectGivingAmount(500)">$500</button>
-                <button class="donation-btn" onclick="selectGivingAmount('custom')">Custom Amount</button>
+            <div class="donation-options" id="givingOptions">
+                <button class="donation-btn" onclick="selectGivingAmount(25, this)">$25</button>
+                <button class="donation-btn" onclick="selectGivingAmount(50, this)">$50</button>
+                <button class="donation-btn" onclick="selectGivingAmount(100, this)">$100</button>
+                <button class="donation-btn" onclick="selectGivingAmount(250, this)">$250</button>
+                <button class="donation-btn" onclick="selectGivingAmount(500, this)">$500</button>
+                <button class="donation-btn" onclick="selectGivingAmount('custom', this)">Custom Amount</button>
             </div>
 
-            <input type="email" class="email-input" placeholder="Your email address (for receipt)" id="givingEmailInput">
+            <div id="givingCustomAmountField" style="display: none; margin-top: 1rem;">
+                <input type="number" class="email-input" placeholder="Enter custom amount" id="givingCustomInput" min="1" step="1">
+            </div>
+
+            <input type="email" class="email-input" placeholder="Your email address (for receipt)" id="givingEmailInput" style="margin-top: 1rem;">
 
             <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processGiving()">
                 <i class="fas fa-heart"></i> Continue to Give
@@ -1805,16 +1816,20 @@
             <p id="modalSongTitle" style="color: #666; margin-bottom: 1rem;">Choose your contribution amount</p>
             <p style="color: #666; font-size: 0.9rem;">All songs are available for free download. Any contribution helps us create more music!</p>
 
-            <div class="donation-options">
-                <button class="donation-btn" onclick="selectAmount('free')">Free Download</button>
-                <button class="donation-btn" onclick="selectAmount(5)">$5</button>
-                <button class="donation-btn" onclick="selectAmount(10)">$10</button>
-                <button class="donation-btn" onclick="selectAmount(50)">$50</button>
-                <button class="donation-btn" onclick="selectAmount(100)">$100</button>
-                <button class="donation-btn" onclick="selectAmount('custom')">Custom Amount</button>
+            <div class="donation-options" id="donationOptions">
+                <button class="donation-btn" onclick="selectAmount('free', this)">Free Download</button>
+                <button class="donation-btn" onclick="selectAmount(5, this)">$5</button>
+                <button class="donation-btn" onclick="selectAmount(10, this)">$10</button>
+                <button class="donation-btn" onclick="selectAmount(50, this)">$50</button>
+                <button class="donation-btn" onclick="selectAmount(100, this)">$100</button>
+                <button class="donation-btn" onclick="selectAmount('custom', this)">Custom Amount</button>
             </div>
 
-            <input type="email" class="email-input" placeholder="Your email address" id="emailInput">
+            <div id="customAmountField" style="display: none; margin-top: 1rem;">
+                <input type="number" class="email-input" placeholder="Enter custom amount" id="customInput" min="1" step="1">
+            </div>
+
+            <input type="email" class="email-input" placeholder="Your email address" id="emailInput" style="margin-top: 1rem;">
 
             <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processDownload()">
                 Continue to Download
@@ -2467,6 +2482,15 @@
         let selectedGivingAmount = null;
 
         function openGivingModal() {
+            // Reset modal state
+            selectedGivingAmount = null;
+            document.querySelectorAll('#givingOptions .donation-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('givingCustomAmountField').style.display = 'none';
+            document.getElementById('givingCustomInput').value = '';
+            document.getElementById('givingEmailInput').value = '';
+
             document.getElementById('givingModal').classList.add('active');
         }
 
@@ -2474,13 +2498,23 @@
             document.getElementById('givingModal').classList.remove('active');
         }
 
-        function selectGivingAmount(amount) {
-            selectedGivingAmount = amount;
+        function selectGivingAmount(amount, buttonElement) {
+            // Remove active class from all buttons
+            document.querySelectorAll('#givingOptions .donation-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active class to clicked button
+            buttonElement.classList.add('active');
+
             if (amount === 'custom') {
-                const customAmount = prompt('Enter your custom gift amount:');
-                if (customAmount) {
-                    selectedGivingAmount = parseFloat(customAmount);
-                }
+                // Show custom amount field
+                document.getElementById('givingCustomAmountField').style.display = 'block';
+                selectedGivingAmount = 'custom';
+            } else {
+                // Hide custom amount field
+                document.getElementById('givingCustomAmountField').style.display = 'none';
+                selectedGivingAmount = amount;
             }
         }
 
@@ -2497,6 +2531,17 @@
                 return;
             }
 
+            // Get final amount (handle custom input)
+            let finalAmount = selectedGivingAmount;
+            if (selectedGivingAmount === 'custom') {
+                const customValue = document.getElementById('givingCustomInput').value;
+                if (!customValue || parseFloat(customValue) < 1) {
+                    alert('Please enter a valid custom amount (minimum $1)');
+                    return;
+                }
+                finalAmount = parseFloat(customValue);
+            }
+
             // Create Stripe checkout session
             try {
                 const response = await fetch('/api/create-donation-checkout', {
@@ -2505,7 +2550,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        amount: selectedGivingAmount
+                        amount: finalAmount
                     })
                 });
 
@@ -2533,6 +2578,16 @@
         // Donation modal (for song downloads)
         function openDonationModal(songTitle = null) {
             selectedSong = songTitle;
+
+            // Reset modal state
+            selectedAmount = null;
+            document.querySelectorAll('#donationOptions .donation-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('customAmountField').style.display = 'none';
+            document.getElementById('customInput').value = '';
+            document.getElementById('emailInput').value = '';
+
             const modal = document.getElementById('donationModal');
             const modalTitle = document.getElementById('modalSongTitle');
 
@@ -2549,13 +2604,23 @@
             document.getElementById('donationModal').classList.remove('active');
         }
 
-        function selectAmount(amount) {
-            selectedAmount = amount;
+        function selectAmount(amount, buttonElement) {
+            // Remove active class from all buttons
+            document.querySelectorAll('#donationOptions .donation-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active class to clicked button
+            buttonElement.classList.add('active');
+
             if (amount === 'custom') {
-                const customAmount = prompt('Enter your custom donation amount:');
-                if (customAmount) {
-                    selectedAmount = parseFloat(customAmount);
-                }
+                // Show custom amount field
+                document.getElementById('customAmountField').style.display = 'block';
+                selectedAmount = 'custom';
+            } else {
+                // Hide custom amount field
+                document.getElementById('customAmountField').style.display = 'none';
+                selectedAmount = amount;
             }
         }
 
@@ -2580,6 +2645,17 @@
                 return;
             }
 
+            // Get final amount (handle custom input)
+            let finalAmount = selectedAmount;
+            if (selectedAmount === 'custom') {
+                const customValue = document.getElementById('customInput').value;
+                if (!customValue || parseFloat(customValue) < 1) {
+                    alert('Please enter a valid custom amount (minimum $1)');
+                    return;
+                }
+                finalAmount = parseFloat(customValue);
+            }
+
             // Handle paid download with Stripe
             try {
                 const response = await fetch('/api/create-download-checkout', {
@@ -2588,7 +2664,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        amount: selectedAmount,
+                        amount: finalAmount,
                         songTitle: selectedSong
                     })
                 });
