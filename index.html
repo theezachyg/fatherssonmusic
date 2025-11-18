@@ -47,6 +47,21 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
         :root {
             --primary: #2c3e50;
             --secondary: #3498db;
@@ -1687,6 +1702,102 @@
 
             .mission-statement {
                 padding: 3rem 2.5rem;
+            }
+        }
+
+        /* Small mobile devices (iPhone SE, etc.) */
+        @media (max-width: 375px) {
+            .logo-image {
+                height: 35px;
+            }
+
+            .logo-text {
+                font-size: 0.65rem;
+            }
+
+            .hero h1 {
+                font-size: clamp(1.8rem, 8vw, 2.5rem) !important;
+            }
+
+            .hero .subtitle {
+                font-size: clamp(0.9rem, 4vw, 1.1rem) !important;
+            }
+
+            .song-card {
+                min-height: 450px;
+            }
+
+            .modal-content {
+                padding: 1.25rem 0.875rem;
+            }
+        }
+
+        /* Mobile landscape */
+        @media (max-width: 896px) and (max-height: 450px) and (orientation: landscape) {
+            nav {
+                padding: 0.15rem 0.75rem;
+            }
+
+            nav.scrolled {
+                padding: 0.15rem 0.75rem;
+            }
+
+            .logo-image {
+                height: 35px;
+            }
+
+            .hero {
+                min-height: auto;
+                padding-top: 60px;
+                padding-bottom: 2rem;
+            }
+
+            .hero-content {
+                padding: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem !important;
+                margin-bottom: 0.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1rem !important;
+            }
+
+            .hero p {
+                margin-bottom: 1rem !important;
+            }
+
+            .cta-buttons {
+                flex-direction: row;
+                gap: 0.75rem;
+            }
+
+            .cta-buttons .btn {
+                width: auto;
+            }
+
+            .modal-content {
+                max-height: 85vh;
+                padding: 1rem;
+            }
+
+            .song-card {
+                min-height: 400px;
+            }
+        }
+
+        /* Large desktop screens */
+        @media (min-width: 1440px) {
+            .songs-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 3rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
             }
         }
 
