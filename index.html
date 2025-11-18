@@ -1443,6 +1443,11 @@
                 padding: 0 1rem;
             }
 
+            .song-card {
+                aspect-ratio: auto;
+                min-height: 500px;
+            }
+
             .song-card-content {
                 padding: 1.5rem;
             }
@@ -1599,6 +1604,11 @@
             .songs-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
+            }
+
+            .song-card {
+                aspect-ratio: auto;
+                min-height: 550px;
             }
 
             .hero-content {
@@ -2398,15 +2408,6 @@
                 comingSoonText.innerHTML = '<i class="fas fa-clock"></i> This song will be available soon!';
                 actions.appendChild(comingSoonText);
             } else {
-                console.log('Song controls for:', fields.songTitle, {
-                    streamingToggle: fields.streamingToggle,
-                    hasStreamingFile: !!fields.streamingAudioFile,
-                    lyricsToggle: fields.lyricsToggle,
-                    hasLyrics: !!fields.lyrics,
-                    downloadsToggle: fields.downloadsToggle,
-                    hasDownloadFile: !!fields.downloadAudioFile
-                });
-
                 // Stream button (if enabled)
                 if (fields.streamingToggle && fields.streamingAudioFile) {
                     const streamBtn = document.createElement('button');
@@ -2414,7 +2415,6 @@
                     streamBtn.innerHTML = '<i class="fas fa-play"></i> STREAM';
                     streamBtn.onclick = () => playSong(fields.songTitle, fields.shortDescription || fields.songDescription);
                     actions.appendChild(streamBtn);
-                    console.log('Added STREAM button for:', fields.songTitle);
                 }
 
                 // Lyrics button (if enabled)
@@ -2424,7 +2424,6 @@
                     lyricsBtn.innerHTML = '<i class="fas fa-file-lines"></i> LYRICS';
                     lyricsBtn.onclick = () => showLyrics(fields.slugId);
                     actions.appendChild(lyricsBtn);
-                    console.log('Added LYRICS button for:', fields.songTitle);
                 }
 
                 // Download button (if enabled)
@@ -2434,7 +2433,6 @@
                     downloadBtn.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
                     downloadBtn.onclick = () => openDonationModal(fields.songTitle);
                     actions.appendChild(downloadBtn);
-                    console.log('Added DOWNLOAD button for:', fields.songTitle);
                 }
             }
 
