@@ -623,20 +623,21 @@
         /* Audio Player */
         .audio-player {
             position: fixed;
-            bottom: -100px;
+            bottom: 0;
             left: 0;
             width: 100%;
             background: rgba(26, 26, 26, 0.98);
             backdrop-filter: blur(20px);
             padding: 1.5rem 2rem;
             box-shadow: 0 -5px 30px rgba(0,0,0,0.5);
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 999;
             border-top: 2px solid rgba(79, 172, 254, 0.3);
         }
 
         .audio-player.active {
-            bottom: 0;
+            transform: translateY(0);
         }
 
         .player-content {
@@ -1420,13 +1421,30 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .logo-image {
+                height: 50px;
+            }
+
+            .logo-text {
+                font-size: 1rem;
+            }
+
             .songs-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
+                padding: 0 1rem;
             }
 
             .song-card-content {
-                padding: 2rem;
+                padding: 1.5rem;
             }
 
             nav ul {
@@ -1441,6 +1459,7 @@
                 padding: 5rem 2rem;
                 gap: 1rem;
                 transition: right 0.3s ease;
+                z-index: 1001;
             }
 
             nav ul.active {
@@ -1451,13 +1470,39 @@
                 display: block;
             }
 
-            .songs-grid {
-                grid-template-columns: 1fr;
+            .hero-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .hero h1 {
+                font-size: clamp(2rem, 8vw, 3rem) !important;
+                letter-spacing: -1px;
+            }
+
+            .hero .subtitle {
+                font-size: clamp(1rem, 4vw, 1.3rem) !important;
+                letter-spacing: 2px;
+            }
+
+            .hero p {
+                font-size: 1rem !important;
+                margin-bottom: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cta-buttons .btn {
+                width: 100%;
             }
 
             .about-content {
                 grid-template-columns: 1fr;
                 gap: 2rem;
+                padding: 2rem 1rem;
             }
 
             .about-grid {
@@ -1470,7 +1515,8 @@
             }
 
             .mission-statement {
-                padding: 3rem 2rem;
+                padding: 2rem 1.5rem;
+                margin: 1rem;
             }
 
             .contact-grid {
@@ -1498,12 +1544,69 @@
                 right: 1rem;
             }
 
-            .cta-buttons {
-                flex-direction: column;
-            }
-
             .donation-options {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            /* Modal improvements for mobile */
+            .modal-content {
+                width: 95%;
+                max-width: 500px;
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .donation-btn {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .email-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            input, textarea, select {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            /* Pagination improvements */
+            .pagination {
+                flex-wrap: wrap;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+
+            .pagination button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            /* Footer improvements */
+            footer {
+                padding: 2rem 1rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+        }
+
+        /* Tablet specific styles */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .songs-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .hero-content {
+                padding: 2.5rem;
+            }
+
+            .mission-statement {
+                padding: 3rem 2.5rem;
             }
         }
 
@@ -1757,7 +1860,8 @@
                     <p>We'd love to hear from you. Whether you have questions, need support, or want to share your story, please reach out.</p>
                     
                     <form class="contact-form" id="contactForm" onsubmit="handleContactSubmit(event)">
-                        <input type="text" name="name" placeholder="Your Name" required class="form-input">
+                        <input type="text" name="firstName" placeholder="First Name" required class="form-input">
+                        <input type="text" name="lastName" placeholder="Last Name" required class="form-input">
                         <input type="email" name="email" placeholder="Your Email" required class="form-input">
                         <textarea name="message" placeholder="Your Message" rows="5" required class="form-textarea"></textarea>
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
@@ -1843,7 +1947,9 @@
                 </div>
             </div>
 
-            <input type="email" class="email-input" placeholder="Your email address (for receipt)" id="givingEmailInput" style="margin-top: 1rem;">
+            <input type="text" class="email-input" placeholder="First Name" id="givingFirstNameInput" style="margin-top: 1rem;">
+            <input type="text" class="email-input" placeholder="Last Name" id="givingLastNameInput">
+            <input type="email" class="email-input" placeholder="Your email address (for receipt)" id="givingEmailInput">
 
             <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processGiving()">
                 <i class="fas fa-heart"></i> Continue to Give
@@ -1879,7 +1985,9 @@
                 </div>
             </div>
 
-            <input type="email" class="email-input" placeholder="Your email address" id="emailInput" style="margin-top: 1rem;">
+            <input type="text" class="email-input" placeholder="First Name" id="downloadFirstNameInput" style="margin-top: 1rem;">
+            <input type="text" class="email-input" placeholder="Last Name" id="downloadLastNameInput">
+            <input type="email" class="email-input" placeholder="Your email address" id="emailInput">
 
             <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processDownload()">
                 Continue to Download
@@ -2290,6 +2398,15 @@
                 comingSoonText.innerHTML = '<i class="fas fa-clock"></i> This song will be available soon!';
                 actions.appendChild(comingSoonText);
             } else {
+                console.log('Song controls for:', fields.songTitle, {
+                    streamingToggle: fields.streamingToggle,
+                    hasStreamingFile: !!fields.streamingAudioFile,
+                    lyricsToggle: fields.lyricsToggle,
+                    hasLyrics: !!fields.lyrics,
+                    downloadsToggle: fields.downloadsToggle,
+                    hasDownloadFile: !!fields.downloadAudioFile
+                });
+
                 // Stream button (if enabled)
                 if (fields.streamingToggle && fields.streamingAudioFile) {
                     const streamBtn = document.createElement('button');
@@ -2297,6 +2414,7 @@
                     streamBtn.innerHTML = '<i class="fas fa-play"></i> STREAM';
                     streamBtn.onclick = () => playSong(fields.songTitle, fields.shortDescription || fields.songDescription);
                     actions.appendChild(streamBtn);
+                    console.log('Added STREAM button for:', fields.songTitle);
                 }
 
                 // Lyrics button (if enabled)
@@ -2306,6 +2424,7 @@
                     lyricsBtn.innerHTML = '<i class="fas fa-file-lines"></i> LYRICS';
                     lyricsBtn.onclick = () => showLyrics(fields.slugId);
                     actions.appendChild(lyricsBtn);
+                    console.log('Added LYRICS button for:', fields.songTitle);
                 }
 
                 // Download button (if enabled)
@@ -2315,6 +2434,7 @@
                     downloadBtn.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
                     downloadBtn.onclick = () => openDonationModal(fields.songTitle);
                     actions.appendChild(downloadBtn);
+                    console.log('Added DOWNLOAD button for:', fields.songTitle);
                 }
             }
 
@@ -2568,6 +2688,8 @@
             });
             document.getElementById('givingCustomAmountField').style.display = 'none';
             document.getElementById('givingCustomInput').value = '';
+            document.getElementById('givingFirstNameInput').value = '';
+            document.getElementById('givingLastNameInput').value = '';
             document.getElementById('givingEmailInput').value = '';
 
             document.getElementById('givingModal').classList.add('active');
@@ -2598,7 +2720,14 @@
         }
 
         async function processGiving() {
+            const firstName = document.getElementById('givingFirstNameInput').value;
+            const lastName = document.getElementById('givingLastNameInput').value;
             const email = document.getElementById('givingEmailInput').value;
+
+            if (!firstName || !lastName) {
+                alert('Please enter your first and last name');
+                return;
+            }
 
             if (!email || !email.includes('@')) {
                 alert('Please enter a valid email address for your receipt');
@@ -2629,6 +2758,9 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        firstName,
+                        lastName,
+                        email,
                         amount: finalAmount
                     })
                 });
@@ -2678,6 +2810,8 @@
             });
             document.getElementById('customAmountField').style.display = 'none';
             document.getElementById('customInput').value = '';
+            document.getElementById('downloadFirstNameInput').value = '';
+            document.getElementById('downloadLastNameInput').value = '';
             document.getElementById('emailInput').value = '';
 
             const modal = document.getElementById('donationModal');
@@ -2717,7 +2851,14 @@
         }
 
         async function processDownload() {
+            const firstName = document.getElementById('downloadFirstNameInput').value;
+            const lastName = document.getElementById('downloadLastNameInput').value;
             const email = document.getElementById('emailInput').value;
+
+            if (!firstName || !lastName) {
+                alert('Please enter your first and last name');
+                return;
+            }
 
             if (!email || !email.includes('@')) {
                 alert('Please enter a valid email address');
@@ -2747,6 +2888,8 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
+                            firstName,
+                            lastName,
                             email,
                             songTitle: selectedSong,
                             downloadUrl
@@ -2795,6 +2938,9 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        firstName,
+                        lastName,
+                        email,
                         amount: finalAmount,
                         songTitle: selectedSong,
                         downloadUrl
@@ -3200,7 +3346,8 @@ Read the Bible and send up prayers`
 
             try {
                 // Get form values
-                const name = formData.get('name');
+                const firstName = formData.get('firstName');
+                const lastName = formData.get('lastName');
                 const email = formData.get('email');
                 const message = formData.get('message');
 
@@ -3210,7 +3357,7 @@ Read the Bible and send up prayers`
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name, email, message })
+                    body: JSON.stringify({ firstName, lastName, email, message })
                 });
 
                 const result = await response.json();
