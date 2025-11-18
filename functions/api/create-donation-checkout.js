@@ -5,11 +5,19 @@
 
 export async function onRequestPost(context) {
     try {
-        const { amount } = await context.request.json();
+        const { firstName, lastName, email, amount } = await context.request.json();
 
         // Validate amount
         if (!amount || amount < 1) {
             return new Response(JSON.stringify({ error: 'Invalid amount' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Validate customer info
+        if (!firstName || !lastName || !email) {
+            return new Response(JSON.stringify({ error: 'Customer information required' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -34,13 +42,19 @@ export async function onRequestPost(context) {
             },
             body: new URLSearchParams({
                 'mode': 'payment',
+                'customer_email': email,
+                'billing_address_collection': 'required',
+                'automatic_tax[enabled]': 'true',
                 'line_items[0][price_data][currency]': 'usd',
                 'line_items[0][price_data][product_data][name]': 'Donation to Fathers Son Music',
                 'line_items[0][price_data][product_data][description]': 'Thank you for supporting our mission to help people find Christ through song',
                 'line_items[0][price_data][unit_amount]': (amount * 100).toString(),
                 'line_items[0][quantity]': '1',
+                'line_items[0][price_data][tax_behavior]': 'exclusive',
                 'success_url': `${new URL(context.request.url).origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-                'cancel_url': `${new URL(context.request.url).origin}/#songs`
+                'cancel_url': `${new URL(context.request.url).origin}/#songs`,
+                'metadata[firstName]': firstName,
+                'metadata[lastName]': lastName
             })
         });
 

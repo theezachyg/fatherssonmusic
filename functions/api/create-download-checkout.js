@@ -5,7 +5,7 @@
 
 export async function onRequestPost(context) {
     try {
-        const { amount, songTitle, downloadUrl } = await context.request.json();
+        const { firstName, lastName, email, amount, songTitle, downloadUrl } = await context.request.json();
 
         // Validate inputs
         if (!amount || amount < 1) {
@@ -17,6 +17,13 @@ export async function onRequestPost(context) {
 
         if (!songTitle || !downloadUrl) {
             return new Response(JSON.stringify({ error: 'Song title and download URL required' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        if (!firstName || !lastName || !email) {
+            return new Response(JSON.stringify({ error: 'Customer information required' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -41,13 +48,19 @@ export async function onRequestPost(context) {
             },
             body: new URLSearchParams({
                 'mode': 'payment',
+                'customer_email': email,
+                'billing_address_collection': 'required',
+                'automatic_tax[enabled]': 'true',
                 'line_items[0][price_data][currency]': 'usd',
                 'line_items[0][price_data][product_data][name]': `Download: ${songTitle}`,
                 'line_items[0][price_data][product_data][description]': 'High-quality MP3 download + support for Fathers Son Music ministry',
                 'line_items[0][price_data][unit_amount]': (amount * 100).toString(),
                 'line_items[0][quantity]': '1',
+                'line_items[0][price_data][tax_behavior]': 'exclusive',
                 'success_url': `${new URL(context.request.url).origin}/success.html?session_id={CHECKOUT_SESSION_ID}&song=${encodeURIComponent(songTitle)}`,
                 'cancel_url': `${new URL(context.request.url).origin}/#songs`,
+                'metadata[firstName]': firstName,
+                'metadata[lastName]': lastName,
                 'metadata[songTitle]': songTitle,
                 'metadata[downloadUrl]': downloadUrl
             })
