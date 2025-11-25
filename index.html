@@ -3051,12 +3051,25 @@
 
             // Get download URL for the selected song from Contentful
             const selectedSongData = contentfulSongs.find(song => song.fields.songTitle === selectedSong);
-            if (!selectedSongData || !selectedSongData.fields.downloadAudioFile) {
-                alert('Download not available for this song. Please contact us.');
+
+            console.log('Selected song:', selectedSong);
+            console.log('Selected song data:', selectedSongData);
+
+            if (!selectedSongData) {
+                alert('Song not found in Contentful. Please contact us.');
+                console.error('Song not found:', selectedSong);
+                return;
+            }
+
+            if (!selectedSongData.fields.downloadAudioFile) {
+                alert('Download file not configured in Contentful. Please upload the Download Audio File for this song in Contentful CMS. See CONTENTFUL_DOWNLOAD_SETUP.md for instructions.');
+                console.error('downloadAudioFile field missing for song:', selectedSong);
+                console.log('Available fields:', Object.keys(selectedSongData.fields));
                 return;
             }
 
             const downloadUrl = 'https:' + selectedSongData.fields.downloadAudioFile.fields.file.url;
+            console.log('Download URL:', downloadUrl);
 
             // Handle free download
             if (selectedAmount === 'free' || selectedAmount === 0) {
