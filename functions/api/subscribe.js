@@ -38,7 +38,7 @@ export async function onRequestPost(context) {
                 to: [email],
                 subject: 'Welcome to Fathers Son Music!',
                 html: `
-                    <h2>Thank you for subscribing, ${firstName}!</h2>
+                    <h2>Thank you for subscribing, ${firstName} ${lastName}!</h2>
                     <p>We're grateful to have you join our community. You'll be the first to know when we release new songs that point people to Christ.</p>
                     <p>Our mission is to help people from exclusive church backgrounds find and follow Jesus through song.</p>
                     <p><strong>What to expect:</strong></p>
@@ -83,6 +83,22 @@ export async function onRequestPost(context) {
         });
 
         await adminEmailResponse.json(); // Log but don't fail if admin email fails
+
+        // Save to D1 database
+        try {
+            await context.env.DB.prepare(
+                'INSERT INTO submissions (first_name, last_name, email, form_type, additional_info) VALUES (?, ?, ?, ?, ?)'
+            ).bind(
+                firstName,
+                lastName,
+                email,
+                'Newsletter Signup',
+                'Subscribed to newsletter'
+            ).run();
+        } catch (dbError) {
+            // Don't fail the request if database logging fails
+            console.error('Database logging error:', dbError);
+        }
 
         return new Response(JSON.stringify({
             success: true,

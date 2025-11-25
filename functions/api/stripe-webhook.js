@@ -44,6 +44,8 @@ export async function onRequestPost(context) {
 
             // Get customer email and metadata
             const customerEmail = session.customer_details?.email || session.customer_email;
+            const firstName = session.metadata?.firstName || '';
+            const lastName = session.metadata?.lastName || '';
             const songTitle = session.metadata?.songTitle;
             const downloadUrl = session.metadata?.downloadUrl;
 
@@ -66,7 +68,7 @@ export async function onRequestPost(context) {
                             to: [customerEmail],
                             subject: `Your Download: ${songTitle}`,
                             html: `
-                                <h2>Thank you for your support!</h2>
+                                <h2>Thank you for your support${firstName ? `, ${firstName}` : ''}!</h2>
                                 <p>Your payment was successful and your download for <strong>"${songTitle}"</strong> is ready.</p>
 
                                 <div style="text-align: center; margin: 2rem 0;">
@@ -95,6 +97,28 @@ export async function onRequestPost(context) {
                     });
 
                     console.log('Download link sent to:', customerEmail);
+                }
+            }
+
+            // Save to D1 database
+            if (customerEmail) {
+                try {
+                    // Determine if this is a donation or paid download
+                    const isDonation = !songTitle;
+                    const amount = session.amount_total ? (session.amount_total / 100).toFixed(2) : '0';
+
+                    await context.env.DB.prepare(
+                        'INSERT INTO submissions (first_name, last_name, email, form_type, additional_info) VALUES (?, ?, ?, ?, ?)'
+                    ).bind(
+                        firstName || '',
+                        lastName || '',
+                        customerEmail,
+                        isDonation ? 'Donation' : 'Song Download - Paid',
+                        isDonation ? `$${amount}` : `${songTitle} - $${amount}`
+                    ).run();
+                } catch (dbError) {
+                    // Don't fail the webhook if database logging fails
+                    console.error('Database logging error:', dbError);
                 }
             }
         }

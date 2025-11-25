@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Fathers Son Music</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #2980b9;
+            --light: #ecf0f1;
+            --dark: #1a1a1a;
+            --gradient-1: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-2: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-3: linear-gradient(135deg, #667eea 0%, #4facfe 100%);
+            --shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--dark);
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #1a1a1a, #2c3e50, #34495e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 10vh auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        h1 {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            width: auto;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .error {
+            color: #e53e3e;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--gradient-1);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-contact { background: #e6f2ff; color: #0066cc; }
+        .badge-newsletter { background: #e6ffe6; color: #00cc00; }
+        .badge-download-free { background: #fff2e6; color: #cc8800; }
+        .badge-download-paid { background: #ffe6f2; color: #cc0066; }
+        .badge-donation { background: #f2e6ff; color: #6600cc; }
+
+        .badge-new { background: #e53e3e; color: white; }
+        .badge-read { background: #48bb78; color: white; }
+
+        .status-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .status-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .additional-info {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .logout-btn {
+            float: right;
+            background: #e53e3e;
+        }
+
+        .logout-btn:hover {
+            box-shadow: 0 4px 8px rgba(229, 62, 62, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .admin-container {
+                padding: 1rem;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+
+            .additional-info {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+
+    <!-- Login Screen -->
+    <div class="login-container" id="loginContainer">
+        <div class="logo">
+            <img src="assets/logo.svg" alt="Fathers Son Music">
+            <div class="logo-text">Fathers Son Music</div>
+        </div>
+        <h1>Admin Portal</h1>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required autocomplete="current-password">
+                <div class="error" id="loginError"></div>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-container" id="adminContainer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="assets/logo.svg" alt="Fathers Son Music" style="height: 50px;">
+                <div>
+                    <div class="logo-text" style="margin-bottom: 0.25rem;">Fathers Son Music</div>
+                    <h1 style="margin: 0; font-size: 1.5rem;">Form Submissions</h1>
+                </div>
+            </div>
+            <button class="btn btn-secondary logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total Submissions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="contactCount">0</div>
+                <div class="stat-label">Contact Forms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="newsletterCount">0</div>
+                <div class="stat-label">Newsletter Signups</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="downloadCount">0</div>
+                <div class="stat-label">Downloads</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="donationCount">0</div>
+                <div class="stat-label">Donations</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search by name or email..." onkeyup="filterTable()">
+            <select class="filter-select" id="formTypeFilter" onchange="filterTable()">
+                <option value="">All Forms</option>
+                <option value="Contact Form">Contact Forms</option>
+                <option value="Newsletter Signup">Newsletter Signups</option>
+                <option value="Song Download - Free">Free Downloads</option>
+                <option value="Song Download - Paid">Paid Downloads</option>
+                <option value="Donation">Donations</option>
+            </select>
+            <select class="filter-select" id="statusFilter" onchange="filterTable()">
+                <option value="">All Status</option>
+                <option value="new">New</option>
+                <option value="read">Read</option>
+            </select>
+            <button class="btn btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
+        </div>
+
+        <!-- Table -->
+        <div id="tableContainer">
+            <div class="loading">Loading submissions...</div>
+        </div>
+    </div>
+
+    <script>
+        let allSubmissions = [];
+        let authToken = null;
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    authToken = result.token;
+                    sessionStorage.setItem('adminToken', authToken);
+                    showDashboard();
+                } else {
+                    errorEl.textContent = 'Invalid password';
+                }
+            } catch (error) {
+                errorEl.textContent = 'Login failed. Please try again.';
+            }
+        }
+
+        async function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminContainer').style.display = 'block';
+            await loadSubmissions();
+        }
+
+        async function loadSubmissions() {
+            try {
+                const response = await fetch('/api/admin/submissions', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (!response.ok) {
+                    logout();
+                    return;
+                }
+
+                const data = await response.json();
+                allSubmissions = data.submissions;
+                updateStats();
+                renderTable(allSubmissions);
+            } catch (error) {
+                console.error('Failed to load submissions:', error);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalCount').textContent = allSubmissions.length;
+            document.getElementById('contactCount').textContent =
+                allSubmissions.filter(s => s.form_type === 'Contact Form').length;
+            document.getElementById('newsletterCount').textContent =
+                allSubmissions.filter(s => s.form_type === 'Newsletter Signup').length;
+            document.getElementById('downloadCount').textContent =
+                allSubmissions.filter(s => s.form_type.includes('Download')).length;
+            document.getElementById('donationCount').textContent =
+                allSubmissions.filter(s => s.form_type === 'Donation').length;
+        }
+
+        function renderTable(submissions) {
+            const container = document.getElementById('tableContainer');
+
+            if (submissions.length === 0) {
+                container.innerHTML = '<div class="loading">No submissions found.</div>';
+                return;
+            }
+
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Form Type</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${submissions.map(s => `
+                            <tr>
+                                <td>${new Date(s.created_at).toLocaleString()}</td>
+                                <td>${s.first_name} ${s.last_name}</td>
+                                <td>${s.email}</td>
+                                <td><span class="badge ${getBadgeClass(s.form_type)}">${s.form_type}</span></td>
+                                <td class="additional-info" title="${s.additional_info || ''}">${s.additional_info || '-'}</td>
+                                <td>
+                                    <span class="badge ${s.status === 'new' ? 'badge-new' : 'badge-read'}">${s.status}</span>
+                                    <button class="status-btn" onclick="toggleStatus(${s.id}, '${s.status}')">
+                                        ${s.status === 'new' ? 'Mark Read' : 'Mark New'}
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function getBadgeClass(formType) {
+            if (formType === 'Contact Form') return 'badge-contact';
+            if (formType === 'Newsletter Signup') return 'badge-newsletter';
+            if (formType === 'Song Download - Free') return 'badge-download-free';
+            if (formType === 'Song Download - Paid') return 'badge-download-paid';
+            if (formType === 'Donation') return 'badge-donation';
+            return '';
+        }
+
+        async function toggleStatus(id, currentStatus) {
+            const newStatus = currentStatus === 'new' ? 'read' : 'new';
+
+            try {
+                await fetch('/api/admin/update-status', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id, status: newStatus })
+                });
+
+                await loadSubmissions();
+            } catch (error) {
+                console.error('Failed to update status:', error);
+            }
+        }
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const formType = document.getElementById('formTypeFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const filtered = allSubmissions.filter(s => {
+                const matchesSearch =
+                    s.first_name.toLowerCase().includes(searchTerm) ||
+                    s.last_name.toLowerCase().includes(searchTerm) ||
+                    s.email.toLowerCase().includes(searchTerm);
+
+                const matchesFormType = !formType || s.form_type === formType;
+                const matchesStatus = !status || s.status === status;
+
+                return matchesSearch && matchesFormType && matchesStatus;
+            });
+
+            renderTable(filtered);
+        }
+
+        function exportCSV() {
+            const csv = [
+                ['Date', 'First Name', 'Last Name', 'Email', 'Form Type', 'Details', 'Status'],
+                ...allSubmissions.map(s => [
+                    new Date(s.created_at).toLocaleString(),
+                    s.first_name,
+                    s.last_name,
+                    s.email,
+                    s.form_type,
+                    s.additional_info || '',
+                    s.status
+                ])
+            ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `submissions-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        function logout() {
+            authToken = null;
+            sessionStorage.removeItem('adminToken');
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('adminContainer').style.display = 'none';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').textContent = '';
+        }
+
+        // Check for existing session on load
+        window.addEventListener('load', () => {
+            const token = sessionStorage.getItem('adminToken');
+            if (token) {
+                authToken = token;
+                showDashboard();
+            }
+        });
+    </script>
+</body>
+</html>

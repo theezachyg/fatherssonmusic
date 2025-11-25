@@ -5,10 +5,10 @@
 
 export async function onRequestPost(context) {
     try {
-        const { email, songTitle, downloadUrl } = await context.request.json();
+        const { firstName, lastName, email, songTitle, downloadUrl } = await context.request.json();
 
         // Validate inputs
-        if (!email || !songTitle || !downloadUrl) {
+        if (!firstName || !lastName || !email || !songTitle || !downloadUrl) {
             return new Response(JSON.stringify({ error: 'Missing required fields' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
@@ -38,7 +38,7 @@ export async function onRequestPost(context) {
                 to: [email],
                 subject: `Your Download: ${songTitle}`,
                 html: `
-                    <h2>Thank you for your support!</h2>
+                    <h2>Thank you for your support, ${firstName}!</h2>
                     <p>Your download for <strong>"${songTitle}"</strong> is ready.</p>
 
                     <div style="text-align: center; margin: 2rem 0;">
@@ -71,6 +71,22 @@ export async function onRequestPost(context) {
         if (!emailResponse.ok) {
             console.error('Resend error:', result);
             throw new Error(result.message || 'Failed to send email');
+        }
+
+        // Save to D1 database
+        try {
+            await context.env.DB.prepare(
+                'INSERT INTO submissions (first_name, last_name, email, form_type, additional_info) VALUES (?, ?, ?, ?, ?)'
+            ).bind(
+                firstName,
+                lastName,
+                email,
+                'Song Download - Free',
+                songTitle
+            ).run();
+        } catch (dbError) {
+            // Don't fail the request if database logging fails
+            console.error('Database logging error:', dbError);
         }
 
         return new Response(JSON.stringify({
