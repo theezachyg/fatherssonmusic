@@ -150,11 +150,14 @@
 
         <div id="downloadInfo" style="display: none;" class="download-info">
             <h2><i class="fas fa-music"></i> Your Download</h2>
-            <p>Your song download will begin shortly. If it doesn't start automatically, please contact us.</p>
+            <p id="downloadStatus">Your song download is starting now...</p>
             <p><strong id="songTitle"></strong></p>
+            <button id="manualDownloadBtn" class="btn" style="display: none; margin-top: 1rem;">
+                <i class="fas fa-download"></i> Download Again
+            </button>
         </div>
 
-        <p>You should receive an email confirmation shortly with your receipt.</p>
+        <p id="emailConfirmation">You should receive an email confirmation shortly with your receipt<span id="downloadEmailNote"></span>.</p>
 
         <div style="margin-top: 2rem;">
             <a href="/" class="btn">Return to Home</a>
@@ -171,13 +174,40 @@
         // Check if this was a song download
         const urlParams = new URLSearchParams(window.location.search);
         const songTitle = urlParams.get('song');
+        const downloadUrl = urlParams.get('download');
 
-        if (songTitle) {
+        if (songTitle && downloadUrl) {
             document.getElementById('downloadInfo').style.display = 'block';
             document.getElementById('songTitle').textContent = songTitle;
+            document.getElementById('downloadEmailNote').textContent = ' and a download link';
 
-            // In a production setup, you would trigger the actual download here
-            // For now, we'll just show the message
+            // Function to trigger download
+            function triggerDownload() {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = decodeURIComponent(downloadUrl);
+                downloadLink.download = `${songTitle}.mp3`;
+                downloadLink.target = '_blank';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+
+                // Update status and show manual download button
+                setTimeout(() => {
+                    document.getElementById('downloadStatus').textContent = 'Download started! Check your downloads folder.';
+                    document.getElementById('manualDownloadBtn').style.display = 'inline-block';
+                }, 1000);
+            }
+
+            // Trigger download automatically
+            setTimeout(triggerDownload, 1500);
+
+            // Manual download button
+            document.getElementById('manualDownloadBtn').addEventListener('click', triggerDownload);
+        } else if (songTitle) {
+            // Song title but no download URL (shouldn't happen, but handle gracefully)
+            document.getElementById('downloadInfo').style.display = 'block';
+            document.getElementById('songTitle').textContent = songTitle;
+            document.getElementById('downloadStatus').textContent = 'A download link has been sent to your email.';
         }
     </script>
 </body>

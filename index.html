@@ -3099,7 +3099,16 @@
                             currency: 'USD'
                         });
 
-                        alert(`Thank you! A download link for "${selectedSong}" has been sent to ${email}`);
+                        // Trigger actual download to device
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = downloadUrl;
+                        downloadLink.download = `${selectedSong}.mp3`;
+                        downloadLink.target = '_blank';
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink);
+
+                        alert(`Thank you! "${selectedSong}" is downloading now. A download link has also been sent to ${email}`);
                         closeDonationModal();
                     } else {
                         const errorMsg = result.details || result.error || 'Failed to send download link';

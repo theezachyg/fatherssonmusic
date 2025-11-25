@@ -54,7 +54,7 @@ export async function onRequestPost(context) {
                 'line_items[0][price_data][product_data][description]': 'High-quality MP3 download + support for Fathers Son Music ministry',
                 'line_items[0][price_data][unit_amount]': (amount * 100).toString(),
                 'line_items[0][quantity]': '1',
-                'success_url': `${new URL(context.request.url).origin}/success.html?session_id={CHECKOUT_SESSION_ID}&song=${encodeURIComponent(songTitle)}`,
+                'success_url': `${new URL(context.request.url).origin}/success.html?session_id={CHECKOUT_SESSION_ID}&song=${encodeURIComponent(songTitle)}&download=${encodeURIComponent(downloadUrl)}`,
                 'cancel_url': `${new URL(context.request.url).origin}/#songs`,
                 'metadata[firstName]': firstName,
                 'metadata[lastName]': lastName,
