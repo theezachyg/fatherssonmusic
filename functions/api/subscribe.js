@@ -34,7 +34,7 @@ export async function onRequestPost(context) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                from: 'Fathers Son Music <onboarding@resend.dev>',
+                from: 'Fathers Son Music <newsletter@fatherssonmusic.com>',
                 to: [email],
                 subject: 'Welcome to Fathers Son Music!',
                 html: `
@@ -71,8 +71,8 @@ export async function onRequestPost(context) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                from: 'Fathers Son Music <onboarding@resend.dev>',
-                to: ['contact@fatherssonmusic.com'], // Change this to your actual email
+                from: 'Fathers Son Music <newsletter@fatherssonmusic.com>',
+                to: ['contact@fatherssonmusic.com'],
                 subject: `New Subscriber: ${firstName} ${lastName}`,
                 html: `
                     <h2>New Newsletter Subscription</h2>

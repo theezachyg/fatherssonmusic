@@ -28,7 +28,7 @@ export async function onRequestPost(context) {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: 'Fathers Son Music <onboarding@resend.dev>',
+                        from: 'Fathers Son Music <contact@fatherssonmusic.com>',
                         to: ['contact@fatherssonmusic.com'],
                         reply_to: email,
                         subject: `Contact Form: ${firstName} ${lastName}`,

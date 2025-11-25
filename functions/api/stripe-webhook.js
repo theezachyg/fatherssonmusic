@@ -64,7 +64,7 @@ export async function onRequestPost(context) {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            from: 'Fathers Son Music <onboarding@resend.dev>',
+                            from: 'Fathers Son Music <downloads@fatherssonmusic.com>',
                             to: [customerEmail],
                             subject: `Your Download: ${songTitle}`,
                             html: `
