@@ -3102,11 +3102,13 @@
                         alert(`Thank you! A download link for "${selectedSong}" has been sent to ${email}`);
                         closeDonationModal();
                     } else {
-                        throw new Error(result.error || 'Failed to send download link');
+                        const errorMsg = result.details || result.error || 'Failed to send download link';
+                        console.error('API error:', result);
+                        throw new Error(errorMsg);
                     }
                 } catch (error) {
                     console.error('Free download error:', error);
-                    alert('Error sending download link. Please try again.');
+                    alert(`Error sending download link: ${error.message}\n\nPlease check the browser console for more details.`);
                 }
                 return;
             }

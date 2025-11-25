@@ -69,9 +69,15 @@ export async function onRequestPost(context) {
         const result = await emailResponse.json();
 
         if (!emailResponse.ok) {
-            console.error('Resend error:', result);
-            throw new Error(result.message || 'Failed to send email');
+            console.error('Resend API error response:', {
+                status: emailResponse.status,
+                statusText: emailResponse.statusText,
+                result: result
+            });
+            throw new Error(`Resend error: ${result.message || emailResponse.statusText || 'Failed to send email'}`);
         }
+
+        console.log('Email sent successfully:', result);
 
         // Save to D1 database
         try {
@@ -99,8 +105,10 @@ export async function onRequestPost(context) {
 
     } catch (error) {
         console.error('Send download link error:', error);
+        console.error('Error stack:', error.stack);
         return new Response(JSON.stringify({
-            error: 'Failed to send download link. Please try again.'
+            error: 'Failed to send download link. Please try again.',
+            details: error.message
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
