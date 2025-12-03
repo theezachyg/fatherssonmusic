@@ -29,10 +29,12 @@ export async function onRequestGet(context) {
         const blob = await response.blob();
 
         // Return with forced download headers
+        // Use application/octet-stream to force download instead of playing
         return new Response(blob, {
             headers: {
-                'Content-Type': 'audio/mpeg',
+                'Content-Type': 'application/octet-stream',
                 'Content-Disposition': `attachment; filename="${filename}"`,
+                'X-Content-Type-Options': 'nosniff',
                 'Cache-Control': 'public, max-age=31536000',
             }
         });
