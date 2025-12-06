@@ -460,6 +460,19 @@
             .songs-grid {
                 grid-template-columns: 1fr;
             }
+
+            .song-card {
+                aspect-ratio: auto;
+                min-height: 550px;
+            }
+        }
+
+        /* Medium tablets that need taller cards */
+        @media (min-width: 641px) and (max-width: 768px) {
+            .song-card {
+                aspect-ratio: 3/4;
+                min-height: 500px;
+            }
         }
 
         .song-card {
@@ -1579,7 +1592,7 @@
 
             .song-card {
                 aspect-ratio: auto;
-                min-height: 500px;
+                min-height: 520px;
             }
 
             .song-card-content {
@@ -1806,6 +1819,11 @@
 
         /* Extra small screens - more aggressive sizing */
         @media (max-width: 480px) {
+            .song-card {
+                aspect-ratio: auto;
+                min-height: 580px;
+            }
+
             .song-card-content {
                 padding: 1rem;
             }
@@ -1876,12 +1894,12 @@
             }
 
             .song-card {
-                aspect-ratio: auto;
-                min-height: 500px;
+                aspect-ratio: 3/4;
+                min-height: 480px;
             }
 
-            .song-content {
-                padding: 1.5rem;
+            .song-card-content {
+                padding: 1.8rem;
             }
 
             .mission-statement {
