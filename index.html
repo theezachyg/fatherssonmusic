@@ -2899,8 +2899,11 @@
             'Spiritual Abuse': 'Media/3-Spiritual_Abuse-Fathers_Son_Music.mp3'
         };
 
-        // Generate waveform bars
-        function generateWaveform(duration) {
+        // Generate waveform bars using Web Audio API for real waveforms
+        let audioContext;
+        let waveformCache = {}; // Cache waveforms to avoid reprocessing
+
+        async function generateWaveform(audioFile, duration) {
             const waveform = document.getElementById('waveform');
             waveform.innerHTML = ''; // Clear existing bars
 
@@ -2916,19 +2919,98 @@
             // Set waveform width
             waveform.style.width = totalWidth + 'px';
 
+            // Check if we have cached waveform data
+            if (waveformCache[audioFile]) {
+                renderWaveform(waveformCache[audioFile], barCount);
+                return;
+            }
+
+            // If no audio file provided yet, show loading bars
+            if (!audioFile) {
+                for (let i = 0; i < barCount; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'wave-bar';
+                    bar.style.height = '30%';
+                    bar.style.opacity = '0.2';
+                    waveform.appendChild(bar);
+                }
+                return;
+            }
+
+            try {
+                // Create audio context if it doesn't exist
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                // Fetch and decode the audio file
+                const response = await fetch(audioFile);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+                // Extract raw audio data
+                const rawData = audioBuffer.getChannelData(0); // Get first channel
+                const samples = barCount;
+                const blockSize = Math.floor(rawData.length / samples);
+                const waveformData = [];
+
+                // Sample the audio data to create waveform
+                for (let i = 0; i < samples; i++) {
+                    const start = blockSize * i;
+                    let sum = 0;
+
+                    // Calculate average amplitude for this block
+                    for (let j = 0; j < blockSize; j++) {
+                        sum += Math.abs(rawData[start + j]);
+                    }
+
+                    const average = sum / blockSize;
+                    waveformData.push(average);
+                }
+
+                // Normalize the data (find max value)
+                const maxValue = Math.max(...waveformData);
+                const normalizedData = waveformData.map(val => (val / maxValue) * 100);
+
+                // Cache the waveform data
+                waveformCache[audioFile] = normalizedData;
+
+                // Render the waveform
+                renderWaveform(normalizedData, barCount);
+
+            } catch (error) {
+                console.error('Error generating waveform:', error);
+                // Fallback to simple bars if waveform generation fails
+                for (let i = 0; i < barCount; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'wave-bar';
+                    bar.style.height = Math.random() * 60 + 20 + '%';
+                    waveform.appendChild(bar);
+                }
+            }
+        }
+
+        // Render waveform from data
+        function renderWaveform(waveformData, barCount) {
+            const waveform = document.getElementById('waveform');
+            waveform.innerHTML = '';
+
             for (let i = 0; i < barCount; i++) {
                 const bar = document.createElement('div');
                 bar.className = 'wave-bar';
-                // Random heights for visual interest
-                const height = Math.random() * 60 + 20;
+
+                // Use real waveform data with minimum height for visibility
+                const height = Math.max(waveformData[i] || 10, 10);
                 bar.style.height = height + '%';
+
                 waveform.appendChild(bar);
             }
         }
 
         function playSong(title, description) {
             const player = document.getElementById('audioPlayer');
-            const audioFile = songFiles[title];
+            // Check Contentful songs first, then fall back to hardcoded songs
+            const audioFile = contentfulSongFiles[title] || songFiles[title];
 
             if (!audioFile) {
                 console.error('Audio file not found for:', title);
@@ -2959,13 +3041,15 @@
                 alert('Unable to play audio. Please try again.');
             });
 
-            // Generate initial waveform (will be regenerated when metadata loads)
-            generateWaveform();
+            // Generate initial loading waveform (will be replaced with real waveform when metadata loads)
+            generateWaveform(null);
         }
 
-        // Regenerate waveform when metadata is loaded (we know the duration)
+        // Generate real waveform when metadata is loaded (we know the duration and have the file)
         audioElement.addEventListener('loadedmetadata', () => {
-            generateWaveform(audioElement.duration);
+            if (currentSongData && currentSongData.file) {
+                generateWaveform(currentSongData.file, audioElement.duration);
+            }
         });
 
         function togglePlay() {
