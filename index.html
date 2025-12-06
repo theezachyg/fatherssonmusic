@@ -2818,7 +2818,7 @@
             // Add flip button for mobile/touch devices to view full artwork
             const flipBtn = document.createElement('button');
             flipBtn.className = 'flip-btn';
-            flipBtn.innerHTML = '<i class="fas fa-image"></i>';
+            flipBtn.innerHTML = '<i class="fas fa-rotate"></i>';
             flipBtn.setAttribute('aria-label', 'Toggle album artwork view');
             flipBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -2827,7 +2827,7 @@
                 if (card.classList.contains('flipped')) {
                     flipBtn.innerHTML = '<i class="fas fa-times"></i>';
                 } else {
-                    flipBtn.innerHTML = '<i class="fas fa-image"></i>';
+                    flipBtn.innerHTML = '<i class="fas fa-rotate"></i>';
                 }
             };
 
