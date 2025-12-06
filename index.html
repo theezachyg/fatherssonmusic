@@ -648,17 +648,27 @@
             text-align: center;
             padding: 0.875rem 1rem !important;
             font-size: 0.9rem !important;
-            font-weight: 600;
+            font-weight: 600 !important;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-radius: 0;
+            border-radius: 0 !important;
             transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        /* Ensure consistent borders for all song action buttons */
+        .song-actions .btn-primary {
+            border: 2px solid transparent !important;
+        }
+
+        .song-actions .btn-secondary {
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
         }
 
         /* Override default btn hover transforms */
         .song-actions .btn-primary:hover,
         .song-actions .btn-secondary:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px) !important;
         }
 
         .song-actions .play-btn:nth-child(1) {
@@ -679,36 +689,30 @@
         }
 
         /* Ensure buttons are visible when card is hovered (bright background) */
-        .song-card:hover .play-btn {
-            background: rgba(26, 26, 26, 0.8);
-            border-color: rgba(26, 26, 26, 0.9);
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        .song-card:hover .song-actions .play-btn {
+            background: rgba(26, 26, 26, 0.8) !important;
+            border-color: rgba(26, 26, 26, 0.9) !important;
+            color: white !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
         }
 
-        .song-card:hover .play-btn:hover {
-            background: var(--gradient-1);
-            border-color: transparent;
-            transform: translateY(-2px);
+        .song-card:hover .song-actions .play-btn:hover {
+            background: var(--gradient-1) !important;
+            border-color: transparent !important;
+            transform: translateY(-2px) !important;
         }
 
         .song-card:hover .song-actions .btn {
-            background: rgba(26, 26, 26, 0.7);
-            border: 2px solid rgba(26, 26, 26, 0.8);
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            background: rgba(26, 26, 26, 0.7) !important;
+            border: 2px solid rgba(26, 26, 26, 0.8) !important;
+            color: white !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
         }
 
         .song-card:hover .song-actions .btn:hover {
-            background: var(--gradient-1);
-            border-color: transparent;
-            transform: translateY(-2px);
-        }
-
-        /* Ensure btn-primary and btn-secondary maintain gradient on button hover */
-        .song-card:hover .song-actions .btn-primary:hover,
-        .song-card:hover .song-actions .btn-secondary:hover {
-            background: var(--gradient-1);
+            background: var(--gradient-1) !important;
+            border-color: transparent !important;
+            transform: translateY(-2px) !important;
         }
 
         /* Pagination */
@@ -1617,8 +1621,8 @@
 
             .song-actions .btn,
             .song-actions .play-btn {
-                padding: 0.65rem 0.75rem;
-                font-size: 0.85rem;
+                padding: 0.65rem 0.75rem !important;
+                font-size: 0.85rem !important;
             }
 
             nav ul {
@@ -1856,8 +1860,8 @@
 
             .song-actions .btn,
             .song-actions .play-btn {
-                padding: 0.5rem 0.6rem;
-                font-size: 0.75rem;
+                padding: 0.5rem 0.6rem !important;
+                font-size: 0.75rem !important;
                 font-weight: 600;
             }
         }
