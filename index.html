@@ -1586,6 +1586,26 @@
                 padding: 1.5rem;
             }
 
+            .song-card h3 {
+                font-size: 1.4rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .song-card p {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .song-actions {
+                gap: 0.5rem;
+            }
+
+            .song-actions .btn,
+            .song-actions .play-btn {
+                padding: 0.65rem 0.75rem;
+                font-size: 0.85rem;
+            }
+
             nav ul {
                 position: fixed;
                 top: 0;
@@ -1781,6 +1801,44 @@
                 flex-direction: column;
                 text-align: center;
                 gap: 1rem;
+            }
+        }
+
+        /* Extra small screens - more aggressive sizing */
+        @media (max-width: 480px) {
+            .song-card-content {
+                padding: 1rem;
+            }
+
+            .song-header {
+                margin-bottom: 1rem;
+            }
+
+            .song-card h3 {
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+                margin-bottom: 0.3rem;
+            }
+
+            .song-date {
+                font-size: 0.8rem;
+            }
+
+            .song-card p {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+                line-height: 1.5;
+            }
+
+            .song-actions {
+                gap: 0.4rem;
+            }
+
+            .song-actions .btn,
+            .song-actions .play-btn {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.75rem;
+                font-weight: 600;
             }
         }
 
