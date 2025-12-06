@@ -514,6 +514,55 @@
             opacity: 0;
         }
 
+        /* Flip button for mobile/touch devices */
+        .flip-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .flip-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(180deg);
+        }
+
+        .flip-btn:active {
+            transform: scale(0.95) rotate(180deg);
+        }
+
+        /* Flipped state - hide text content, show full artwork */
+        .song-card.flipped::before {
+            opacity: 0;
+        }
+
+        .song-card.flipped .song-card-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .song-card.flipped .flip-btn {
+            background: rgba(26, 26, 26, 0.6);
+            color: white;
+        }
+
+        .song-card.flipped:hover .flip-btn {
+            background: rgba(26, 26, 26, 0.8);
+        }
+
         .song-card-content {
             position: relative;
             z-index: 2;
@@ -522,6 +571,7 @@
             height: 100%;
             padding: 2.5rem;
             justify-content: space-between;
+            transition: opacity 0.4s ease;
         }
 
         .song-header {
@@ -2764,6 +2814,24 @@
             content.appendChild(header);
             content.appendChild(description);
             content.appendChild(actions);
+
+            // Add flip button for mobile/touch devices to view full artwork
+            const flipBtn = document.createElement('button');
+            flipBtn.className = 'flip-btn';
+            flipBtn.innerHTML = '<i class="fas fa-image"></i>';
+            flipBtn.setAttribute('aria-label', 'Toggle album artwork view');
+            flipBtn.onclick = (e) => {
+                e.stopPropagation();
+                card.classList.toggle('flipped');
+                // Change icon based on state
+                if (card.classList.contains('flipped')) {
+                    flipBtn.innerHTML = '<i class="fas fa-times"></i>';
+                } else {
+                    flipBtn.innerHTML = '<i class="fas fa-image"></i>';
+                }
+            };
+
+            card.appendChild(flipBtn);
             card.appendChild(content);
 
             return card;
