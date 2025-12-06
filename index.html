@@ -2202,18 +2202,32 @@
     <div class="modal" id="bulkDownloadModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeBulkDownloadModal()">×</button>
-            <h2>Download All Songs</h2>
-            <p style="color: #666; margin-bottom: 1rem;">Get all our songs sent to your email</p>
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem;">
-                <i class="fas fa-info-circle"></i> You'll receive an email with download links for all available songs. No payment required!
-            </p>
+            <h2>Download All Songs & Support</h2>
+            <p style="color: #666; margin-bottom: 1rem;">Choose your contribution amount</p>
+            <p style="color: #666; font-size: 0.9rem;">All songs are available for free download. Any contribution helps us create more music!</p>
+
+            <div class="donation-options" id="bulkDonationOptions">
+                <button class="donation-btn" onclick="selectBulkAmount('free', this)">Free Download</button>
+                <button class="donation-btn" onclick="selectBulkAmount(5, this)">$5</button>
+                <button class="donation-btn" onclick="selectBulkAmount(10, this)">$10</button>
+                <button class="donation-btn" onclick="selectBulkAmount(50, this)">$50</button>
+                <button class="donation-btn" onclick="selectBulkAmount(100, this)">$100</button>
+                <button class="donation-btn" onclick="selectBulkAmount('custom', this)">Custom Amount</button>
+            </div>
+
+            <div id="bulkCustomAmountField" style="display: none;">
+                <div class="currency-input-wrapper">
+                    <span class="dollar-sign">$</span>
+                    <input type="number" class="currency-input" placeholder="0.00" id="bulkCustomInput" min="1" step="0.01">
+                </div>
+            </div>
 
             <input type="text" class="email-input" placeholder="First Name" id="bulkDownloadFirstNameInput" style="margin-top: 1rem;">
             <input type="text" class="email-input" placeholder="Last Name" id="bulkDownloadLastNameInput">
             <input type="email" class="email-input" placeholder="Your email address" id="bulkDownloadEmailInput">
 
             <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processBulkDownload()">
-                <i class="fas fa-download"></i> Send Download Links
+                Continue to Download
             </button>
 
             <p style="margin-top: 1rem; font-size: 0.85rem; color: #666; text-align: center;">
@@ -3051,12 +3065,44 @@
         }
 
         // Bulk Download Modal Functions
+        let selectedBulkAmount = null;
+
         function openBulkDownloadModal() {
+            // Reset donation selection
+            selectedBulkAmount = null;
+            document.querySelectorAll('#bulkDonationOptions .donation-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('bulkCustomAmountField').style.display = 'none';
+            document.getElementById('bulkCustomInput').value = '';
+            document.getElementById('bulkDownloadFirstNameInput').value = '';
+            document.getElementById('bulkDownloadLastNameInput').value = '';
+            document.getElementById('bulkDownloadEmailInput').value = '';
             document.getElementById('bulkDownloadModal').classList.add('active');
         }
 
         function closeBulkDownloadModal() {
             document.getElementById('bulkDownloadModal').classList.remove('active');
+        }
+
+        function selectBulkAmount(amount, buttonElement) {
+            // Remove active class from all buttons
+            document.querySelectorAll('#bulkDonationOptions .donation-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active class to clicked button
+            buttonElement.classList.add('active');
+
+            if (amount === 'custom') {
+                // Show custom amount field
+                document.getElementById('bulkCustomAmountField').style.display = 'block';
+                selectedBulkAmount = 'custom';
+            } else {
+                // Hide custom amount field
+                document.getElementById('bulkCustomAmountField').style.display = 'none';
+                selectedBulkAmount = amount;
+            }
         }
 
         async function processBulkDownload() {
@@ -3074,14 +3120,76 @@
                 return;
             }
 
-            try {
-                // Show loading state
-                const button = event.target;
-                const originalText = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                button.disabled = true;
+            if (selectedBulkAmount === null) {
+                alert('Please select a download option');
+                return;
+            }
 
-                const response = await fetch('/api/send-bulk-download-links', {
+            // Handle free download
+            if (selectedBulkAmount === 'free' || selectedBulkAmount === 0) {
+                try {
+                    const button = event.target;
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    button.disabled = true;
+
+                    const response = await fetch('/api/send-bulk-download-links', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            firstName,
+                            lastName,
+                            email
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Track bulk download event
+                        pushDataLayerEvent('bulk_download', {
+                            download_type: 'bulk_free',
+                            song_count: result.songCount,
+                            value: 0,
+                            currency: 'USD'
+                        });
+
+                        alert(`Success! Download links for ${result.songCount} songs have been sent to ${email}.\n\nPlease check your inbox (and spam folder) for the email.`);
+                        closeBulkDownloadModal();
+                    } else {
+                        const errorMsg = result.details || result.error || 'Failed to send download links';
+                        console.error('API error:', result);
+                        throw new Error(errorMsg);
+                    }
+
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                } catch (error) {
+                    console.error('Bulk download error:', error);
+                    alert(`Error: ${error.message}\n\nPlease try again or contact us if the problem persists.`);
+                    const button = event.target;
+                    button.innerHTML = 'Continue to Download';
+                    button.disabled = false;
+                }
+                return;
+            }
+
+            // Get final amount (handle custom input)
+            let finalAmount = selectedBulkAmount;
+            if (selectedBulkAmount === 'custom') {
+                const customValue = document.getElementById('bulkCustomInput').value;
+                if (!customValue || parseFloat(customValue) < 1) {
+                    alert('Please enter a valid custom amount (minimum $1)');
+                    return;
+                }
+                finalAmount = parseFloat(customValue);
+            }
+
+            // Handle paid download with Stripe
+            try {
+                const response = await fetch('/api/create-bulk-download-checkout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -3089,45 +3197,42 @@
                     body: JSON.stringify({
                         firstName,
                         lastName,
-                        email
+                        email,
+                        amount: finalAmount
                     })
                 });
 
-                const result = await response.json();
+                const data = await response.json();
 
-                if (result.success) {
-                    // Track bulk download event
-                    pushDataLayerEvent('bulk_download', {
-                        download_type: 'bulk_free',
-                        song_count: result.songCount,
-                        value: 0,
-                        currency: 'USD'
-                    });
-
-                    alert(`Success! Download links for ${result.songCount} songs have been sent to ${email}.\n\nPlease check your inbox (and spam folder) for the email.`);
-                    closeBulkDownloadModal();
-
-                    // Clear form
-                    document.getElementById('bulkDownloadFirstNameInput').value = '';
-                    document.getElementById('bulkDownloadLastNameInput').value = '';
-                    document.getElementById('bulkDownloadEmailInput').value = '';
-                } else {
-                    const errorMsg = result.details || result.error || 'Failed to send download links';
-                    console.error('API error:', result);
-                    throw new Error(errorMsg);
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
                 }
 
-                // Reset button
-                button.innerHTML = originalText;
-                button.disabled = false;
-            } catch (error) {
-                console.error('Bulk download error:', error);
-                alert(`Error: ${error.message}\n\nPlease try again or contact us if the problem persists.`);
+                // Track begin checkout event
+                pushDataLayerEvent('begin_checkout', {
+                    currency: 'USD',
+                    value: finalAmount,
+                    transaction_type: 'bulk_download',
+                    items: [{
+                        item_name: 'All Songs',
+                        item_category: 'Bulk Download',
+                        price: finalAmount,
+                        quantity: 1
+                    }]
+                });
 
-                // Reset button on error
-                const button = event.target;
-                button.innerHTML = '<i class="fas fa-download"></i> Send Download Links';
-                button.disabled = false;
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: data.sessionId
+                });
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('Error creating checkout session. Please try again.');
             }
         }
 
