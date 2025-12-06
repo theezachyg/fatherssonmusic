@@ -697,19 +697,6 @@
             border-color: transparent;
         }
 
-        /* Song card button icons - green accent */
-        .song-actions .play-btn i,
-        .song-actions .btn-secondary i,
-        .song-actions .btn-primary i {
-            color: #43e97b;
-        }
-
-        .song-card:hover .song-actions .play-btn i,
-        .song-card:hover .song-actions .btn-secondary i,
-        .song-card:hover .song-actions .btn-primary i {
-            color: #43e97b;
-        }
-
         /* Pagination */
         .pagination {
             display: flex;
@@ -2906,7 +2893,7 @@
                 if (fields.streamingToggle && fields.streamingAudioFile) {
                     const streamBtn = document.createElement('button');
                     streamBtn.className = 'play-btn';
-                    streamBtn.innerHTML = '<i class="fas fa-play"></i> STREAM';
+                    streamBtn.innerHTML = 'STREAM';
                     streamBtn.onclick = () => playSong(fields.songTitle, fields.shortDescription || fields.songDescription);
                     actions.appendChild(streamBtn);
                 }
@@ -2915,7 +2902,7 @@
                 if (fields.lyricsToggle && fields.lyrics) {
                     const lyricsBtn = document.createElement('button');
                     lyricsBtn.className = 'btn btn-secondary';
-                    lyricsBtn.innerHTML = '<i class="fas fa-file-lines"></i> LYRICS';
+                    lyricsBtn.innerHTML = 'LYRICS';
                     lyricsBtn.onclick = () => showLyrics(fields.slugId);
                     actions.appendChild(lyricsBtn);
                 }
@@ -2924,7 +2911,7 @@
                 if (fields.downloadsToggle && fields.downloadAudioFile) {
                     const downloadBtn = document.createElement('button');
                     downloadBtn.className = 'btn btn-primary';
-                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
+                    downloadBtn.innerHTML = 'DOWNLOAD';
                     downloadBtn.onclick = () => openDonationModal(fields.songTitle);
                     actions.appendChild(downloadBtn);
                 }
