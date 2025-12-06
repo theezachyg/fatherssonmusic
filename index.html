@@ -1940,6 +1940,14 @@
     <!-- Songs Section -->
     <section id="songs" class="section">
         <h2 class="section-title fade-in">Our Songs</h2>
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <button class="btn btn-primary" onclick="openBulkDownloadModal()" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-download"></i> Download All Songs
+            </button>
+            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 0.5rem;">
+                Get all our songs sent to your email in one click
+            </p>
+        </div>
         <div id="songsLoading" style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.7);">
             <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem;"></i>
             <p>Loading songs...</p>
@@ -2186,6 +2194,30 @@
 
             <p style="margin-top: 1rem; font-size: 0.85rem; color: #666; text-align: center;">
                 By downloading, you agree to our <a href="#" onclick="closeDonationModal(); openTermsModal(); return false;" style="color: #4facfe;">Terms & Conditions</a> and <a href="#" onclick="closeDonationModal(); openPrivacyModal(); return false;" style="color: #4facfe;">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bulk Download Modal -->
+    <div class="modal" id="bulkDownloadModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBulkDownloadModal()">×</button>
+            <h2>Download All Songs</h2>
+            <p style="color: #666; margin-bottom: 1rem;">Get all our songs sent to your email</p>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                <i class="fas fa-info-circle"></i> You'll receive an email with download links for all available songs. No payment required!
+            </p>
+
+            <input type="text" class="email-input" placeholder="First Name" id="bulkDownloadFirstNameInput" style="margin-top: 1rem;">
+            <input type="text" class="email-input" placeholder="Last Name" id="bulkDownloadLastNameInput">
+            <input type="email" class="email-input" placeholder="Your email address" id="bulkDownloadEmailInput">
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="processBulkDownload()">
+                <i class="fas fa-download"></i> Send Download Links
+            </button>
+
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: #666; text-align: center;">
+                By downloading, you agree to our <a href="#" onclick="closeBulkDownloadModal(); openTermsModal(); return false;" style="color: #4facfe;">Terms & Conditions</a> and <a href="#" onclick="closeBulkDownloadModal(); openPrivacyModal(); return false;" style="color: #4facfe;">Privacy Policy</a>
             </p>
         </div>
     </div>
@@ -3009,6 +3041,87 @@
             document.getElementById('donationModal').classList.remove('active');
         }
 
+        // Bulk Download Modal Functions
+        function openBulkDownloadModal() {
+            document.getElementById('bulkDownloadModal').classList.add('active');
+        }
+
+        function closeBulkDownloadModal() {
+            document.getElementById('bulkDownloadModal').classList.remove('active');
+        }
+
+        async function processBulkDownload() {
+            const firstName = document.getElementById('bulkDownloadFirstNameInput').value;
+            const lastName = document.getElementById('bulkDownloadLastNameInput').value;
+            const email = document.getElementById('bulkDownloadEmailInput').value;
+
+            if (!firstName || !lastName) {
+                alert('Please enter your first and last name');
+                return;
+            }
+
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            try {
+                // Show loading state
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                button.disabled = true;
+
+                const response = await fetch('/api/send-bulk-download-links', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        firstName,
+                        lastName,
+                        email
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Track bulk download event
+                    pushDataLayerEvent('bulk_download', {
+                        download_type: 'bulk_free',
+                        song_count: result.songCount,
+                        value: 0,
+                        currency: 'USD'
+                    });
+
+                    alert(`Success! Download links for ${result.songCount} songs have been sent to ${email}.\n\nPlease check your inbox (and spam folder) for the email.`);
+                    closeBulkDownloadModal();
+
+                    // Clear form
+                    document.getElementById('bulkDownloadFirstNameInput').value = '';
+                    document.getElementById('bulkDownloadLastNameInput').value = '';
+                    document.getElementById('bulkDownloadEmailInput').value = '';
+                } else {
+                    const errorMsg = result.details || result.error || 'Failed to send download links';
+                    console.error('API error:', result);
+                    throw new Error(errorMsg);
+                }
+
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+            } catch (error) {
+                console.error('Bulk download error:', error);
+                alert(`Error: ${error.message}\n\nPlease try again or contact us if the problem persists.`);
+
+                // Reset button on error
+                const button = event.target;
+                button.innerHTML = '<i class="fas fa-download"></i> Send Download Links';
+                button.disabled = false;
+            }
+        }
+
         function selectAmount(amount, buttonElement) {
             // Remove active class from all buttons
             document.querySelectorAll('#donationOptions .donation-btn').forEach(btn => {
@@ -3206,6 +3319,12 @@
         document.getElementById('donationModal').addEventListener('click', (e) => {
             if (e.target.id === 'donationModal') {
                 closeDonationModal();
+            }
+        });
+
+        document.getElementById('bulkDownloadModal').addEventListener('click', (e) => {
+            if (e.target.id === 'bulkDownloadModal') {
+                closeBulkDownloadModal();
             }
         });
 
