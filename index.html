@@ -485,7 +485,8 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            aspect-ratio: 3/4;
+            min-height: 550px;
+            height: auto;
             display: flex;
             flex-direction: column;
             background-size: cover;
@@ -2036,6 +2037,12 @@
         }
 
         /* Large desktop screens */
+        @media (min-width: 1025px) {
+            .song-card {
+                min-height: 580px;
+            }
+        }
+
         @media (min-width: 1440px) {
             .songs-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -2045,6 +2052,10 @@
             .contact-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 3rem;
+            }
+
+            .song-card {
+                min-height: 600px;
             }
         }
 
