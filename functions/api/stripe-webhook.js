@@ -17,23 +17,54 @@ export async function onRequestPost(context) {
         // Get raw body for signature verification
         const body = await context.request.text();
 
-        // Verify webhook signature using Stripe API
-        const verifyResponse = await fetch('https://api.stripe.com/v1/webhook_endpoints/verify', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                'payload': body,
-                'signature': signature,
-                'secret': STRIPE_WEBHOOK_SECRET
-            })
-        });
+        // Verify webhook signature manually
+        // Stripe signature format: t=timestamp,v1=signature
+        const sigHeader = signature.split(',').reduce((acc, item) => {
+            const [key, value] = item.split('=');
+            acc[key] = value;
+            return acc;
+        }, {});
 
-        if (!verifyResponse.ok) {
+        const timestamp = sigHeader.t;
+        const expectedSignature = sigHeader.v1;
+
+        // Create the signed payload
+        const signedPayload = `${timestamp}.${body}`;
+
+        // Compute HMAC SHA256 signature
+        const encoder = new TextEncoder();
+        const key = await crypto.subtle.importKey(
+            'raw',
+            encoder.encode(STRIPE_WEBHOOK_SECRET),
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['sign']
+        );
+
+        const signatureBytes = await crypto.subtle.sign(
+            'HMAC',
+            key,
+            encoder.encode(signedPayload)
+        );
+
+        // Convert to hex string
+        const computedSignature = Array.from(new Uint8Array(signatureBytes))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+
+        // Verify signature matches
+        if (computedSignature !== expectedSignature) {
             console.error('Webhook signature verification failed');
+            console.error('Expected:', expectedSignature);
+            console.error('Computed:', computedSignature);
             return new Response('Signature verification failed', { status: 400 });
+        }
+
+        // Check timestamp to prevent replay attacks (within 5 minutes)
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (Math.abs(currentTime - parseInt(timestamp)) > 300) {
+            console.error('Webhook timestamp too old or too far in future');
+            return new Response('Invalid timestamp', { status: 400 });
         }
 
         const event = JSON.parse(body);
@@ -195,7 +226,15 @@ export async function onRequestPost(context) {
                         additionalInfo = `$${amount}`;
                     }
 
-                    await context.env.DB.prepare(
+                    console.log('Saving to database:', {
+                        firstName: firstName || '',
+                        lastName: lastName || '',
+                        email: customerEmail,
+                        formType,
+                        additionalInfo
+                    });
+
+                    const result = await context.env.DB.prepare(
                         'INSERT INTO submissions (first_name, last_name, email, form_type, additional_info) VALUES (?, ?, ?, ?, ?)'
                     ).bind(
                         firstName || '',
@@ -204,10 +243,15 @@ export async function onRequestPost(context) {
                         formType,
                         additionalInfo
                     ).run();
+
+                    console.log('Database save successful:', result);
                 } catch (dbError) {
                     // Don't fail the webhook if database logging fails
                     console.error('Database logging error:', dbError);
+                    console.error('Database error details:', dbError.message, dbError.stack);
                 }
+            } else {
+                console.warn('No customer email found, skipping database save');
             }
         }
 
