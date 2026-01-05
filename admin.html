@@ -251,6 +251,32 @@
             font-weight: 600;
             color: #555;
             border-bottom: 2px solid #e0e0e0;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        th:hover {
+            background: #e9ecef;
+        }
+
+        th.sortable::after {
+            content: ' ⇅';
+            opacity: 0.3;
+            font-size: 0.8rem;
+        }
+
+        th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+            color: #4facfe;
+        }
+
+        th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+            color: #4facfe;
         }
 
         td {
@@ -423,6 +449,7 @@
     <script>
         let allSubmissions = [];
         let authToken = null;
+        let currentSort = { column: 'date', direction: 'desc' };
 
         async function handleLogin(event) {
             event.preventDefault();
@@ -470,7 +497,8 @@
                 const data = await response.json();
                 allSubmissions = data.submissions;
                 updateStats();
-                renderTable(allSubmissions);
+                // Apply default sort (date descending)
+                sortTable('date');
             } catch (error) {
                 console.error('Failed to load submissions:', error);
             }
@@ -496,16 +524,21 @@
                 return;
             }
 
+            const getSortClass = (column) => {
+                if (currentSort.column !== column) return 'sortable';
+                return currentSort.direction === 'asc' ? 'sort-asc' : 'sort-desc';
+            };
+
             const html = `
                 <table>
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Form Type</th>
-                            <th>Details</th>
-                            <th>Status</th>
+                            <th class="${getSortClass('date')}" onclick="sortTable('date')">Date</th>
+                            <th class="${getSortClass('name')}" onclick="sortTable('name')">Name</th>
+                            <th class="${getSortClass('email')}" onclick="sortTable('email')">Email</th>
+                            <th class="${getSortClass('form_type')}" onclick="sortTable('form_type')">Form Type</th>
+                            <th class="${getSortClass('details')}" onclick="sortTable('details')">Details</th>
+                            <th class="${getSortClass('status')}" onclick="sortTable('status')">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -540,6 +573,74 @@
             return '';
         }
 
+        function sortTable(column) {
+            // Toggle direction if same column, otherwise default to ascending
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                // Date should default to descending (newest first), others ascending
+                currentSort.direction = column === 'date' ? 'desc' : 'asc';
+            }
+
+            // Apply current filters
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const formType = document.getElementById('formTypeFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            let filtered = allSubmissions.filter(s => {
+                const matchesSearch =
+                    s.first_name.toLowerCase().includes(searchTerm) ||
+                    s.last_name.toLowerCase().includes(searchTerm) ||
+                    s.email.toLowerCase().includes(searchTerm);
+
+                const matchesFormType = !formType || s.form_type === formType;
+                const matchesStatus = !status || s.status === status;
+
+                return matchesSearch && matchesFormType && matchesStatus;
+            });
+
+            // Sort the filtered data
+            filtered.sort((a, b) => {
+                let aVal, bVal;
+
+                switch (column) {
+                    case 'date':
+                        aVal = new Date(a.created_at);
+                        bVal = new Date(b.created_at);
+                        break;
+                    case 'name':
+                        aVal = `${a.first_name} ${a.last_name}`.toLowerCase();
+                        bVal = `${b.first_name} ${b.last_name}`.toLowerCase();
+                        break;
+                    case 'email':
+                        aVal = a.email.toLowerCase();
+                        bVal = b.email.toLowerCase();
+                        break;
+                    case 'form_type':
+                        aVal = a.form_type.toLowerCase();
+                        bVal = b.form_type.toLowerCase();
+                        break;
+                    case 'details':
+                        aVal = (a.additional_info || '').toLowerCase();
+                        bVal = (b.additional_info || '').toLowerCase();
+                        break;
+                    case 'status':
+                        aVal = a.status.toLowerCase();
+                        bVal = b.status.toLowerCase();
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderTable(filtered);
+        }
+
         async function toggleStatus(id, currentStatus) {
             const newStatus = currentStatus === 'new' ? 'read' : 'new';
 
@@ -560,23 +661,8 @@
         }
 
         function filterTable() {
-            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-            const formType = document.getElementById('formTypeFilter').value;
-            const status = document.getElementById('statusFilter').value;
-
-            const filtered = allSubmissions.filter(s => {
-                const matchesSearch =
-                    s.first_name.toLowerCase().includes(searchTerm) ||
-                    s.last_name.toLowerCase().includes(searchTerm) ||
-                    s.email.toLowerCase().includes(searchTerm);
-
-                const matchesFormType = !formType || s.form_type === formType;
-                const matchesStatus = !status || s.status === status;
-
-                return matchesSearch && matchesFormType && matchesStatus;
-            });
-
-            renderTable(filtered);
+            // Use sortTable with current column to apply both filter and sort
+            sortTable(currentSort.column);
         }
 
         function exportCSV() {
