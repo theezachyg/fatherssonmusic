@@ -3160,6 +3160,16 @@
                     content_type: 'audio',
                     engagement_type: 'stream'
                 });
+
+                // Track stream in database
+                fetch('/api/track-stream', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ songTitle: title })
+                }).catch(error => {
+                    console.error('Failed to track stream:', error);
+                    // Don't fail the player if tracking fails
+                });
             }).catch(error => {
                 console.error('Error playing audio:', error);
                 alert('Unable to play audio. Please try again.');
