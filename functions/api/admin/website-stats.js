@@ -59,8 +59,7 @@ export async function onRequestGet(context) {
                     totalEngagements: last30DaysCount,
                     last7Days: last7DaysCount,
                     totalStreams: totalStreams,
-                    totalDownloads: totalDownloads,
-                    note: 'Using engagement metrics from database. To show full website analytics (unique visitors, page views), configure Cloudflare API credentials.'
+                    totalDownloads: totalDownloads
                 },
                 source: 'database'
             }), {
