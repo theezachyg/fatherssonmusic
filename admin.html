@@ -323,6 +323,85 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            cursor: pointer;
+            color: #4facfe;
+            transition: color 0.2s;
+        }
+
+        .additional-info:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .message-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .message-modal.active {
+            display: flex;
+        }
+
+        .message-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .message-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message-modal-close:hover {
+            color: #333;
+        }
+
+        .message-modal h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .message-detail-row {
+            margin-bottom: 1rem;
+        }
+
+        .message-detail-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.25rem;
+        }
+
+        .message-detail-value {
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .logout-btn {
@@ -524,6 +603,15 @@
         </div>
     </div>
 
+    <!-- Message Details Modal -->
+    <div class="message-modal" id="messageModal">
+        <div class="message-modal-content">
+            <button class="message-modal-close" onclick="closeMessageModal()">×</button>
+            <h3>Submission Details</h3>
+            <div id="messageDetailsContent"></div>
+        </div>
+    </div>
+
     <script>
         let allSubmissions = [];
         let authToken = null;
@@ -674,13 +762,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${submissions.map(s => `
+                        ${submissions.map(s => {
+                            const submissionJson = JSON.stringify(s).replace(/"/g, '&quot;');
+                            return `
                             <tr>
                                 <td>${new Date(s.created_at).toLocaleString()}</td>
                                 <td>${s.first_name} ${s.last_name}</td>
                                 <td>${s.email}</td>
                                 <td><span class="badge ${getBadgeClass(s.form_type)}">${s.form_type}</span></td>
-                                <td class="additional-info" title="${s.additional_info || ''}">${s.additional_info || '-'}</td>
+                                <td class="additional-info" onclick='openMessageModal(${submissionJson})' title="Click to view full details">${s.additional_info || '-'}</td>
                                 <td>
                                     <span class="badge ${s.status === 'new' ? 'badge-new' : 'badge-read'}">${s.status}</span>
                                     <button class="status-btn" onclick="toggleStatus(${s.id}, '${s.status}')">
@@ -688,7 +778,7 @@
                                     </button>
                                 </td>
                             </tr>
-                        `).join('')}
+                        `}).join('')}
                     </tbody>
                 </table>
             `;
@@ -818,6 +908,54 @@
             a.download = `submissions-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
         }
+
+        function openMessageModal(submission) {
+            const modal = document.getElementById('messageModal');
+            const content = document.getElementById('messageDetailsContent');
+
+            const html = `
+                <div class="message-detail-row">
+                    <div class="message-detail-label">Date</div>
+                    <div class="message-detail-value">${new Date(submission.created_at).toLocaleString()}</div>
+                </div>
+                <div class="message-detail-row">
+                    <div class="message-detail-label">Name</div>
+                    <div class="message-detail-value">${submission.first_name} ${submission.last_name}</div>
+                </div>
+                <div class="message-detail-row">
+                    <div class="message-detail-label">Email</div>
+                    <div class="message-detail-value">${submission.email}</div>
+                </div>
+                <div class="message-detail-row">
+                    <div class="message-detail-label">Form Type</div>
+                    <div class="message-detail-value"><span class="badge ${getBadgeClass(submission.form_type)}">${submission.form_type}</span></div>
+                </div>
+                <div class="message-detail-row">
+                    <div class="message-detail-label">Details / Message</div>
+                    <div class="message-detail-value">${submission.additional_info || 'N/A'}</div>
+                </div>
+                <div class="message-detail-row">
+                    <div class="message-detail-label">Status</div>
+                    <div class="message-detail-value"><span class="badge ${submission.status === 'new' ? 'badge-new' : 'badge-read'}">${submission.status}</span></div>
+                </div>
+            `;
+
+            content.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function closeMessageModal() {
+            const modal = document.getElementById('messageModal');
+            modal.classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('messageModal');
+            if (e.target === modal) {
+                closeMessageModal();
+            }
+        });
 
         function logout() {
             authToken = null;
