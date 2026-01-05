@@ -570,6 +570,14 @@
             </div>
         </div>
 
+        <!-- Website Analytics -->
+        <div class="song-stats-section">
+            <h2>Website Analytics (Last 30 Days)</h2>
+            <div id="websiteStatsContainer">
+                <div class="loading">Loading website analytics...</div>
+            </div>
+        </div>
+
         <!-- Song Statistics -->
         <div class="song-stats-section">
             <h2>Song Engagement Statistics</h2>
@@ -648,7 +656,8 @@
             document.getElementById('adminContainer').style.display = 'block';
             await Promise.all([
                 loadSubmissions(),
-                loadSongStats()
+                loadSongStats(),
+                loadWebsiteStats()
             ]);
         }
 
@@ -732,6 +741,86 @@
                     `).join('')}
                 </div>
             `;
+
+            container.innerHTML = html;
+        }
+
+        async function loadWebsiteStats() {
+            try {
+                const response = await fetch('/api/admin/website-stats', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to load website stats');
+                    return;
+                }
+
+                const data = await response.json();
+                renderWebsiteStats(data.stats, data.source);
+            } catch (error) {
+                console.error('Failed to load website stats:', error);
+                document.getElementById('websiteStatsContainer').innerHTML =
+                    '<div class="loading">Failed to load website analytics.</div>';
+            }
+        }
+
+        function renderWebsiteStats(stats, source) {
+            const container = document.getElementById('websiteStatsContainer');
+
+            if (!stats) {
+                container.innerHTML = '<div class="loading">No analytics data available.</div>';
+                return;
+            }
+
+            let html = '';
+
+            if (source === 'cloudflare') {
+                // Full Cloudflare analytics
+                html = `
+                    <div class="stats" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="stat-card" style="background: var(--gradient-3);">
+                            <div class="stat-number">${stats.uniqueVisitors30Days?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Unique Visitors (30d)</div>
+                        </div>
+                        <div class="stat-card" style="background: var(--gradient-2);">
+                            <div class="stat-number">${stats.uniqueVisitors7Days?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Unique Visitors (7d)</div>
+                        </div>
+                        <div class="stat-card" style="background: var(--gradient-1);">
+                            <div class="stat-number">${stats.pageViews30Days?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Page Views (30d)</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <div class="stat-number">${stats.totalRequests30Days?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Total Requests (30d)</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Database-based engagement metrics
+                html = `
+                    <div class="stats" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="stat-card" style="background: var(--gradient-3);">
+                            <div class="stat-number">${stats.totalEngagements?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Total Engagements (30d)</div>
+                        </div>
+                        <div class="stat-card" style="background: var(--gradient-2);">
+                            <div class="stat-number">${stats.last7Days?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Engagements (7d)</div>
+                        </div>
+                        <div class="stat-card" style="background: var(--gradient-1);">
+                            <div class="stat-number">${stats.totalStreams?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Total Streams</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <div class="stat-number">${stats.totalDownloads?.toLocaleString() || 0}</div>
+                            <div class="stat-label">Total Downloads</div>
+                        </div>
+                    </div>
+                    ${stats.note ? `<p style="color: #666; font-size: 0.85rem; margin-top: 1rem; font-style: italic;">${stats.note}</p>` : ''}
+                `;
+            }
 
             container.innerHTML = html;
         }
