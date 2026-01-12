@@ -519,14 +519,6 @@
             z-index: 1;
         }
 
-        .song-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .song-card:hover::before {
-            opacity: 0;
-        }
 
         /* Flip button for mobile/touch devices */
         .flip-btn {
@@ -601,12 +593,6 @@
             letter-spacing: 2px;
             font-weight: 900;
             line-height: 1.2;
-            transition: color 0.4s ease;
-        }
-
-        .song-card:hover h3 {
-            color: #1a1a1a;
-            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .song-date {
@@ -615,11 +601,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
-            transition: color 0.4s ease;
-        }
-
-        .song-card:hover .song-date {
-            color: rgba(26, 26, 26, 0.7);
         }
 
         .song-card p {
@@ -628,12 +609,6 @@
             line-height: 1.6;
             flex-grow: 1;
             font-size: 1.05rem;
-            transition: color 0.4s ease;
-        }
-
-        .song-card:hover p {
-            color: rgba(26, 26, 26, 0.8);
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
         }
 
         .song-actions {
@@ -686,33 +661,6 @@
             background: var(--gradient-1);
             border-color: transparent;
             transform: translateY(-2px);
-        }
-
-        /* Ensure buttons are visible when card is hovered (bright background) */
-        .song-card:hover .song-actions .play-btn {
-            background: rgba(26, 26, 26, 0.8) !important;
-            border-color: rgba(26, 26, 26, 0.9) !important;
-            color: white !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-        }
-
-        .song-card:hover .song-actions .play-btn:hover {
-            background: var(--gradient-1) !important;
-            border-color: transparent !important;
-            transform: translateY(-2px) !important;
-        }
-
-        .song-card:hover .song-actions .btn {
-            background: rgba(26, 26, 26, 0.7) !important;
-            border: 2px solid rgba(26, 26, 26, 0.8) !important;
-            color: white !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-        }
-
-        .song-card:hover .song-actions .btn:hover {
-            background: var(--gradient-1) !important;
-            border-color: transparent !important;
-            transform: translateY(-2px) !important;
         }
 
         /* Pagination */
