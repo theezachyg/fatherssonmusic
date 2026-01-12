@@ -625,6 +625,21 @@
         let authToken = null;
         let currentSort = { column: 'date', direction: 'desc' };
 
+        // Helper function to format dates in Arizona timezone
+        function formatArizonaDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                timeZone: 'America/Phoenix',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        }
+
         async function handleLogin(event) {
             event.preventDefault();
             const password = document.getElementById('password').value;
@@ -854,7 +869,7 @@
                             const submissionJson = JSON.stringify(s).replace(/"/g, '&quot;');
                             return `
                             <tr>
-                                <td>${new Date(s.created_at).toLocaleString()}</td>
+                                <td>${formatArizonaDate(s.created_at)}</td>
                                 <td>${s.first_name} ${s.last_name}</td>
                                 <td>${s.email}</td>
                                 <td><span class="badge ${getBadgeClass(s.form_type)}">${s.form_type}</span></td>
@@ -979,7 +994,7 @@
             const csv = [
                 ['Date', 'First Name', 'Last Name', 'Email', 'Form Type', 'Details', 'Status'],
                 ...allSubmissions.map(s => [
-                    new Date(s.created_at).toLocaleString(),
+                    formatArizonaDate(s.created_at),
                     s.first_name,
                     s.last_name,
                     s.email,
@@ -1004,7 +1019,7 @@
             const html = `
                 <div class="message-detail-row">
                     <div class="message-detail-label">Date</div>
-                    <div class="message-detail-value">${new Date(submission.created_at).toLocaleString()}</div>
+                    <div class="message-detail-value">${formatArizonaDate(submission.created_at)}</div>
                 </div>
                 <div class="message-detail-row">
                     <div class="message-detail-label">Name</div>
