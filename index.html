@@ -30,6 +30,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fathers Son Music - Christian Music Ministry</title>
 
+    <!-- SEO -->
+    <meta name="description" content="Original Christian songs for those leaving exclusive church backgrounds. Find and follow Christ Jesus through song. Pay what you want — free downloads.">
+    <link rel="canonical" href="https://www.fatherssonmusic.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fathers Son Music">
+    <meta property="og:url" content="https://www.fatherssonmusic.com/">
+    <meta property="og:title" content="Fathers Son Music — The Message in the Song">
+    <meta property="og:description" content="Original Christian songs for those leaving exclusive church backgrounds. Find and follow Christ Jesus through song. Pay what you want — free downloads.">
+    <meta property="og:image" content="https://www.fatherssonmusic.com/Media/1-Message_in_the_Song-Fathers_Son_Music.jpg">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:image:alt" content="Fathers Son Music — The Message in the Song">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fathers Son Music — The Message in the Song">
+    <meta name="twitter:description" content="Original Christian songs for those leaving exclusive church backgrounds. Find and follow Christ Jesus through song. Pay what you want — free downloads.">
+    <meta name="twitter:image" content="https://www.fatherssonmusic.com/Media/1-Message_in_the_Song-Fathers_Son_Music.jpg">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "MusicGroup",
+          "@id": "https://www.fatherssonmusic.com/#musicgroup",
+          "name": "Fathers Son Music",
+          "url": "https://www.fatherssonmusic.com/",
+          "description": "Christian music ministry helping people from exclusive church backgrounds find and follow Christ Jesus through song.",
+          "genre": ["Christian", "Worship", "Gospel"],
+          "email": "FathersSonMusic1@gmail.com",
+          "logo": "https://www.fatherssonmusic.com/assets/android-chrome-512x512.png",
+          "image": "https://www.fatherssonmusic.com/Media/1-Message_in_the_Song-Fathers_Son_Music.jpg"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://www.fatherssonmusic.com/#website",
+          "url": "https://www.fatherssonmusic.com/",
+          "name": "Fathers Son Music",
+          "publisher": { "@id": "https://www.fatherssonmusic.com/#musicgroup" },
+          "inLanguage": "en"
+        }
+      ]
+    }
+    </script>
+
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
@@ -628,7 +677,8 @@
         }
 
         .song-actions .btn,
-        .song-actions .play-btn {
+        .song-actions .play-btn,
+        .song-actions .youtube-btn {
             width: 100%;
             text-align: center;
             padding: 0.875rem 1rem !important;
@@ -670,6 +720,84 @@
         .play-btn:hover {
             background: var(--gradient-1);
             border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        /* YouTube button (song cards) */
+        .song-actions .youtube-btn {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 0, 0, 0.55);
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .song-actions .youtube-btn:hover {
+            background: #FF0000;
+            border-color: #FF0000;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .song-actions .youtube-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Subscribe section: YouTube channel button (next to Subscribe Now) */
+        .subscribe-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .subscribe-content .yt-channel-btn {
+            font-size: 1.1rem;
+            padding: 1.2rem 3rem;
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .subscribe-content .yt-channel-btn:hover {
+            background: #FF0000;
+            border-color: #FF0000;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Footer social icons */
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1.25rem;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .footer-social a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.6rem;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            color: #FF0000;
             transform: translateY(-2px);
         }
 
@@ -2613,16 +2741,26 @@
     <section class="subscribe-section">
         <div class="subscribe-content">
             <h2>Stay Updated</h2>
-            <p>Subscribe to receive notifications when new songs are released</p>
-            <button class="btn btn-primary" onclick="openSubscribeModal()">
-                <i class="fas fa-envelope"></i> Subscribe Now
-            </button>
+            <p>Subscribe to receive notifications when new songs are released, or follow our YouTube channel</p>
+            <div class="subscribe-buttons">
+                <button class="btn btn-primary" onclick="openSubscribeModal()">
+                    <i class="fas fa-envelope"></i> Subscribe Now
+                </button>
+                <a class="yt-channel-btn" href="https://www.youtube.com/@FathersSonMusic" target="_blank" rel="noopener noreferrer" onclick="if (typeof pushDataLayerEvent === 'function') pushDataLayerEvent('youtube_channel_click', { source: 'subscribe_section' });">
+                    <i class="fab fa-youtube"></i> Subscribe on YouTube
+                </a>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
         <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">© 2025 Fathers Son Music. All rights reserved.</p>
+        <div class="footer-social">
+            <a href="https://www.youtube.com/@FathersSonMusic" target="_blank" rel="noopener noreferrer" aria-label="Fathers Son Music on YouTube" onclick="if (typeof pushDataLayerEvent === 'function') pushDataLayerEvent('youtube_channel_click', { source: 'footer' });">
+                <i class="fab fa-youtube"></i>
+            </a>
+        </div>
         <div class="footer-links">
             <a href="#about">About</a>
             <a href="#mission">Mission</a>
@@ -2825,6 +2963,17 @@
             }
         }
 
+        // YouTube links per song (keyed by Contentful slugId)
+        const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@FathersSonMusic';
+        const songYouTubeUrls = {
+            'message-in-the-song': 'https://youtu.be/jTHpMxb5nFw?si=SAopjcbEiFrseP4C',
+            'grandpa-nick': 'https://youtu.be/IuRD503hXzo?si=lfty_yWzbFhWiQ4N',
+            'old-friends': 'https://youtu.be/rQ-9f8DdvQs?si=g6sUmXzzYmEiUJjm',
+            'the-plan': 'https://youtu.be/pfUZzBEKM-o?si=SA-d9o0f2KMWogAm',
+            'spiritual-abuse': 'https://youtu.be/O1-vCjrAqA4?si=92Qs5gYHdVxooLyO',
+            'through-and-through': 'https://youtu.be/2tidaKdIC2k?si=TXJaGiBgC8gGM6bq'
+        };
+
         // Create a song card element
         function createSongCard(fields) {
             const card = document.createElement('div');
@@ -2875,6 +3024,27 @@
                     streamBtn.innerHTML = 'STREAM';
                     streamBtn.onclick = () => playSong(fields.songTitle, fields.shortDescription || fields.songDescription);
                     actions.appendChild(streamBtn);
+                }
+
+                // YouTube button (if a URL is configured for this song)
+                const ytUrl = songYouTubeUrls[fields.slugId];
+                if (ytUrl) {
+                    const ytBtn = document.createElement('a');
+                    ytBtn.className = 'youtube-btn';
+                    ytBtn.href = ytUrl;
+                    ytBtn.target = '_blank';
+                    ytBtn.rel = 'noopener noreferrer';
+                    ytBtn.innerHTML = '<i class="fab fa-youtube"></i> Watch on YouTube';
+                    ytBtn.addEventListener('click', () => {
+                        if (typeof pushDataLayerEvent === 'function') {
+                            pushDataLayerEvent('youtube_click', {
+                                song_slug: fields.slugId,
+                                song_title: fields.songTitle,
+                                outbound_url: ytUrl
+                            });
+                        }
+                    });
+                    actions.appendChild(ytBtn);
                 }
 
                 // Lyrics button (if enabled)

@@ -54,3 +54,6 @@ build/
 # Cloudflare
 .wrangler/
 wrangler.toml.backup
+
+# Final Cut Pro project bundles (large local-only assets)
+*.fcpbundle/

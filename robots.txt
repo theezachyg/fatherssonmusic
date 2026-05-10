@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /success
+Disallow: /functions/
+
+Sitemap: https://www.fatherssonmusic.com/sitemap.xml
